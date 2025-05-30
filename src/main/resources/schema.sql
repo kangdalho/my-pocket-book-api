@@ -24,7 +24,7 @@ CREATE TABLE contents (
                           thumbnail VARCHAR(512),
                           book_link VARCHAR(512),
                           summary TEXT,
-                          sale_price DECIMAL(10, 2),
+                          sale_price INT,
                           status VARCHAR(10),
                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
