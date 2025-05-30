@@ -10,8 +10,23 @@ import lombok.NoArgsConstructor;
 @Table(name = "wishlists")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WishList extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(length = 255, nullable = false)
+    private String isbn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id", nullable = false) 
+    private Content content;
+
+
 
 }
