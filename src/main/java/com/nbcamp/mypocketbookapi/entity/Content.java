@@ -35,8 +35,8 @@ public class Content extends BaseEntity {
     @Lob // lob = large object 대용량 객체
     private String summary;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal salePrice;
+    @Column
+    private int salePrice;
 
     @Column(length = 10)
     private String status;
