@@ -37,4 +37,5 @@ public class Review extends BaseEntity {
         this.rating = rating;
         this.text = text;
     }
+
 }
