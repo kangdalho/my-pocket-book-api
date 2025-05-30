@@ -1,5 +1,6 @@
 package com.nbcamp.mypocketbookapi.controller;
 
+import com.nbcamp.mypocketbookapi.dto.LoginRequestDto;
 import com.nbcamp.mypocketbookapi.dto.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.SignupRequestDto;
 import com.nbcamp.mypocketbookapi.service.MemberService;
@@ -24,4 +25,14 @@ public class MemberController {
         MemberResponseDto signup = memberService.signup(requestDto);
         return new ResponseEntity<>(signup, HttpStatus.CREATED);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<MemberResponseDto> login(
+            @Valid
+            @RequestBody LoginRequestDto requestDto
+    ) {
+        MemberResponseDto login = memberService.login(requestDto);
+        return new ResponseEntity<>(login,HttpStatus.OK);
+    }
+
 }
