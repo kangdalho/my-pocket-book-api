@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Getter
 @Entity
 @Table(name = "contents")
@@ -13,5 +15,32 @@ public class Content extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    @Column(nullable = false, length = 255)
+    private String isbn;
+
+    @Column(nullable = false, length = 255)
+    private String title;
+
+    @Column(length = 512)
+    private String thumbnail;
+
+    @Column(length = 512)
+    private String bookLink;
+
+    @Lob // lob = large object 대용량 객체
+    private String summary;
+
+    @Column
+    private int salePrice;
+
+    @Column(length = 10)
+    private String status;
+
+    // 생성자는 객체를 만들때도 쓰이지만 데이터를 초기화하는데도 사용된다
 
 }
