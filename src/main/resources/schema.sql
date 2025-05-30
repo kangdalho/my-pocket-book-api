@@ -25,7 +25,7 @@ CREATE TABLE contents (
                           book_link VARCHAR(512),
                           summary TEXT,
                           sale_price DECIMAL(10, 2),
-                          staus VARCHAR(10),
+                          status VARCHAR(10),
                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                           FOREIGN KEY (member_id) REFERENCES members(id)
