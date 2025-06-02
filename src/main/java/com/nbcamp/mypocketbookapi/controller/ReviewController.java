@@ -39,8 +39,6 @@ public class ReviewController {
 
 
 
-/*
-
 	// 특정 콘텐츠의 특정 리뷰 단건 조회
 	@GetMapping("/api/contents/{contentId}/reviews/{reviewId}")
 	public ResponseEntity<ReviewResponseDto> getReviewByContentIdAndReviewId(
@@ -50,7 +48,7 @@ public class ReviewController {
 		return ResponseEntity.ok(reviewService.getReviewByContentIdAndReviewId(contentId, reviewId));
 	}
 
-	*/
+
 
 
 }

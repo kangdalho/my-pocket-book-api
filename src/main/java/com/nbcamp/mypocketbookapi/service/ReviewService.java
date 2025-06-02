@@ -64,7 +64,7 @@ public class ReviewService {
 	}
 
 
-/*
+
 	// 특정 콘텐츠의 특정 리뷰 단건 조회
 	@Transactional
 	public ReviewResponseDto getReviewByContentIdAndReviewId(Long contentId, Long reviewId) {
@@ -80,7 +80,7 @@ public class ReviewService {
 		}
 
 		return new ReviewResponseDto(review);
-	}*/
+	}
 
 
 }
