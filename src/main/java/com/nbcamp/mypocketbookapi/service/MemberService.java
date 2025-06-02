@@ -1,8 +1,9 @@
 package com.nbcamp.mypocketbookapi.service;
 
-import com.nbcamp.mypocketbookapi.dto.LoginRequestDto;
-import com.nbcamp.mypocketbookapi.dto.MemberResponseDto;
-import com.nbcamp.mypocketbookapi.dto.SignupRequestDto;
+import com.nbcamp.mypocketbookapi.dto.member.request.LoginRequestDto;
+import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
+import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
+import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.exception.BusinessException;
 import com.nbcamp.mypocketbookapi.exception.ErrorCode;
@@ -35,15 +36,22 @@ public class MemberService {
         return new MemberResponseDto(
                 savedMember.getId(),
                 savedMember.getEmail(),
-                savedMember.getNickname());
+                savedMember.getNickname(),
+                savedMember.getCreatedAt());
     }
 
-    public MemberResponseDto login(@Valid LoginRequestDto requestDto) {
+    public LoginResponseDto login(@Valid LoginRequestDto requestDto) {
         Member member = memberJpaRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.EMAIL_MISMATCH));
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
         }
-        return new MemberResponseDto(member.getId(), member.getEmail(), member.getNickname());
+        return new LoginResponseDto(member.getId(), member.getEmail(), member.getNickname());
+    }
+
+    public MemberResponseDto getMyInfo(Long memberId) {
+        Member byId = memberJpaRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+        return new MemberResponseDto(byId.getId(), byId.getEmail(), byId.getNickname(), byId.getCreatedAt());
     }
 }

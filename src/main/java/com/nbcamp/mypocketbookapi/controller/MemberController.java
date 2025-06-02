@@ -1,8 +1,9 @@
 package com.nbcamp.mypocketbookapi.controller;
 
-import com.nbcamp.mypocketbookapi.dto.LoginRequestDto;
-import com.nbcamp.mypocketbookapi.dto.MemberResponseDto;
-import com.nbcamp.mypocketbookapi.dto.SignupRequestDto;
+import com.nbcamp.mypocketbookapi.dto.member.request.LoginRequestDto;
+import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
+import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
+import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
 import com.nbcamp.mypocketbookapi.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +28,19 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberResponseDto> login(
+    public ResponseEntity<LoginResponseDto> login(
             @Valid
             @RequestBody LoginRequestDto requestDto
     ) {
-        MemberResponseDto login = memberService.login(requestDto);
-        return new ResponseEntity<>(login,HttpStatus.OK);
+        LoginResponseDto login = memberService.login(requestDto);
+        return new ResponseEntity<>(login, HttpStatus.OK);
     }
 
+    @GetMapping("/{memberId}")
+    public ResponseEntity<MemberResponseDto> getMyInfo(
+            @PathVariable Long memberId
+    ) {
+        MemberResponseDto myInfo = memberService.getMyInfo(memberId);
+        return new ResponseEntity<>(myInfo,HttpStatus.OK);
+    }
 }
