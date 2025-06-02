@@ -4,10 +4,10 @@ package com.nbcamp.mypocketbookapi.dto.member.response;
 import lombok.Getter;
 
 @Getter
-public class LogoutResponseDto {
+public class MessageResponseDto {
     private final String message;
 
-    public LogoutResponseDto(String message) {
+    public MessageResponseDto(String message) {
         this.message = message;
     }
 }
