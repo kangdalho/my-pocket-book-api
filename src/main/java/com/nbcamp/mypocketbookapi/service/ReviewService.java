@@ -1,5 +1,8 @@
 package com.nbcamp.mypocketbookapi.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.nbcamp.mypocketbookapi.dto.ReviewRequestDto;
@@ -18,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReviewService {
 
-
 	private final ReviewJpaRepository reviewRepository;
 	private final MemberJpaRepository memberRepository;
 	private final ContentJpaRepository contentRepository;
@@ -27,17 +29,14 @@ public class ReviewService {
 	@Transactional
 	public ReviewResponseDto createReview(Long memberId, Long contentId, ReviewRequestDto requestDto ) {
 
-		// 멤버
 		Member member = memberRepository.findById(memberId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 회원입니다")
 		);
 
-		// 콘텐츠
-		Content content =contentRepository.findById(contentId).orElseThrow(
+		Content content = contentRepository.findById(contentId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 콘텐츠입니다")
 		);
 
-		// Review 엔티티 빌더
 		Review review = Review.builder()
 			.member(member)
 			.content(content)
@@ -45,11 +44,43 @@ public class ReviewService {
 			.text(requestDto.getText())
 			.build();
 
-		// Review 저장
 		Review savedReview = reviewRepository.save(review);
 
-		// ResponseDto 로 변환하여 반환
 		return new ReviewResponseDto(savedReview);
 	}
+
+	// 특정 콘텐츠의 모든 리뷰 조회
+	@Transactional
+	public List<ReviewResponseDto> getReviewsByContentId(Long contentId) {
+		contentRepository.findById(contentId).orElseThrow(
+			() -> new RuntimeException("존재하지 않는 콘텐츠입니다")
+		);
+
+		List<Review> reviews = reviewRepository.findByContentId(contentId);
+
+		return reviews.stream()
+			.map(ReviewResponseDto::new)
+			.collect(Collectors.toList());
+	}
+
+
+/*
+	// 특정 콘텐츠의 특정 리뷰 단건 조회
+	@Transactional
+	public ReviewResponseDto getReviewByContentIdAndReviewId(Long contentId, Long reviewId) {
+
+		contentRepository.findById(contentId).orElseThrow(
+			() -> new RuntimeException("존재하지 않는 콘텐츠입니다")
+		);
+
+		Review review = reviewRepository.findByContentIdAndId(contentId, reviewId);
+
+		if (review == null) {
+			throw new RuntimeException("해당 콘텐츠에서 리뷰를 찾을 수 없습니다");
+		}
+
+		return new ReviewResponseDto(review);
+	}*/
+
 
 }
