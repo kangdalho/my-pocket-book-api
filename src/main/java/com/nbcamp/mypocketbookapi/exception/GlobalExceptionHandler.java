@@ -9,12 +9,14 @@ import java.util.Map;
 //예외 전역처리 어노테이션
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    // 회원을 찾지 못했을 때 던지는 커스텀 예외처리 (로그인시 이메일 없음)
+    // BusinessException 발생 시 공통적으로 처리하는 예외 핸들러
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleMemberNotFound(BusinessException ex) {
+    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
+        // BusinessException 안에 정의된 ErrorCode를 꺼낸다.
         ErrorCode errorCode = ex.getErrorCode();
+        // 에러 코드와 메시지를 포함한 ErrorResponse 객체 생성
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
-        // 클라이언트에게 400 Bad Request와 함께 예외 메시지를 JSON 형식으로 응답
+        // HTTP 상태 코드와 함께 ErrorResponse를 응답으로 반환
         return ResponseEntity.status(errorCode.getHttpStatus()).body(errorResponse);
     }
 //    // 이미 사용중인 이메일로 회원가입 할 때 던지는 커스텀 예외처리

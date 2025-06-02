@@ -1,4 +1,4 @@
-package com.nbcamp.mypocketbookapi.dto;
+package com.nbcamp.mypocketbookapi.dto.member.request;
 
 
 import jakarta.validation.constraints.Email;
@@ -15,7 +15,7 @@ public class LoginRequestDto {
     @NotBlank(message = "이메일은 필수입력사항입니다.")
     private final String email;
 
-    @Size(min = 8,message = "비밀번호는 8자 이상이어야 합니다.")
+    @Size(min = 8, message = "비밀번호는 8자 이상이어야 합니다.")
     @NotBlank(message = "비밀번호는 필수입력사항입니다.")
     private final String password;
 }
