@@ -2,6 +2,7 @@ package com.nbcamp.mypocketbookapi.service;
 
 import com.nbcamp.mypocketbookapi.dto.member.request.LoginRequestDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
+import com.nbcamp.mypocketbookapi.dto.member.response.LogoutResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
 import com.nbcamp.mypocketbookapi.entity.Member;
@@ -53,5 +54,9 @@ public class MemberService {
         Member byId = memberJpaRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         return new MemberResponseDto(byId.getId(), byId.getEmail(), byId.getNickname(), byId.getCreatedAt());
+    }
+
+    public void logout() {
+
     }
 }
