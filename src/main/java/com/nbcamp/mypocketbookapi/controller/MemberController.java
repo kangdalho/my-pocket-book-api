@@ -2,6 +2,7 @@ package com.nbcamp.mypocketbookapi.controller;
 
 import com.nbcamp.mypocketbookapi.dto.member.request.LoginRequestDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
+import com.nbcamp.mypocketbookapi.dto.member.response.LogoutResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
 import com.nbcamp.mypocketbookapi.service.MemberService;
@@ -41,6 +42,13 @@ public class MemberController {
             @PathVariable Long memberId
     ) {
         MemberResponseDto myInfo = memberService.getMyInfo(memberId);
-        return new ResponseEntity<>(myInfo,HttpStatus.OK);
+        return new ResponseEntity<>(myInfo, HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<LogoutResponseDto> logout(
+    ) {
+        memberService.logout();
+        return ResponseEntity.ok(new LogoutResponseDto("로그아웃이 완료되었습니다."));
     }
 }
