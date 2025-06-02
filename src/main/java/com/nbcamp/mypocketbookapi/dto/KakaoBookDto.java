@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 public class KakaoBookDto {
+
     private String isbn;
     private String title;
     private String thumbnail;
@@ -15,6 +16,8 @@ public class KakaoBookDto {
     @JsonProperty("contents")
     private String summary;
     @JsonProperty("sale_price")
-    private BigDecimal salePrice;
+    private Integer salePrice;
     private String status;
+
+
 }
