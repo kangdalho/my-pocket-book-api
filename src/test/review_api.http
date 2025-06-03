@@ -1,0 +1,33 @@
+### 리뷰 작성 (POST)
+POST http://localhost:8080/api/contents/1/reviews
+Content-Type: application/json
+
+{
+  "rating": 1,
+  "text": "12"
+}
+
+
+
+### 특정 콘텐츠의 모든 리뷰 조회 (GET)
+GET http://localhost:8080/api/contents/1/reviews
+
+
+
+### 특정 콘텐츠의 특정 리뷰 단건 조회 (GET)
+GET http://localhost:8080/api/contents/1/reviews/1
+
+
+
+### 리뷰 수정 (PUT)
+PUT http://localhost:8080/api/contents/1/reviews/1
+Content-Type: application/json
+
+{
+  "rating": 4,
+  "text": "수정된 리뷰입니다. 좋은 콘텐츠네요."
+}
+
+
+
+

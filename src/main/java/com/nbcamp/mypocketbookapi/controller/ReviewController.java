@@ -6,11 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nbcamp.mypocketbookapi.dto.ReviewRequestDto;
-import com.nbcamp.mypocketbookapi.dto.ReviewResponseDto;
+import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
+import com.nbcamp.mypocketbookapi.dto.review.ReviewResponseDto;
 import com.nbcamp.mypocketbookapi.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,14 @@ public class ReviewController {
 		return ResponseEntity.ok(reviewService.getReviewByContentIdAndReviewId(contentId, reviewId));
 	}
 
-
-
-
+	// 리뷰 수정
+	@PutMapping("/api/contents/{contentId}/reviews/{reviewId}")
+	public ResponseEntity<ReviewResponseDto> updateReview(
+		@PathVariable Long contentId,
+		@PathVariable Long reviewId,
+		@RequestBody ReviewRequestDto reviewRequestDto
+	) {
+		Long memberId = 1L;  // 임시 하드코딩
+		return ResponseEntity.ok(reviewService.updateReview(memberId, contentId, reviewId, reviewRequestDto));
+	}
 }
