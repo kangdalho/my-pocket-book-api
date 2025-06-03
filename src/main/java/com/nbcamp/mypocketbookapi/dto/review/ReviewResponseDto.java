@@ -1,4 +1,4 @@
-package com.nbcamp.mypocketbookapi.dto;
+package com.nbcamp.mypocketbookapi.dto.review;
 
 import java.time.LocalDateTime;
 
