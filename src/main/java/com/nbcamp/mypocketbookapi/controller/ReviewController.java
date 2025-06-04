@@ -26,7 +26,7 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	// 리뷰 작성
-	@PostMapping("contents/{contentId}/reviews")
+	@PostMapping("/contents/{contentId}/reviews")
 	public ResponseEntity<ReviewResponseDto> createReview(
 		@PathVariable Long contentId,
 		@RequestBody ReviewRequestDto reviewRequestDto
@@ -41,8 +41,14 @@ public class ReviewController {
 		return ResponseEntity.ok(reviewService.getReviewsByIsbn(isbn));
 	}
 
+	// 전체 리뷰 조회
+	@GetMapping("/reviews")
+	public ResponseEntity<List<ReviewResponseDto>> getAllReviews() {
+		return ResponseEntity.ok(reviewService.getAllReviews());
+	}
+
 	// 특정 콘텐츠의 특정 리뷰 단건 조회
-	@GetMapping("/api/contents/{contentId}/reviews/{reviewId}")
+	@GetMapping("/contents/{contentId}/reviews/{reviewId}")
 	public ResponseEntity<ReviewResponseDto> getReviewByContentIdAndReviewId(
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId
@@ -51,7 +57,7 @@ public class ReviewController {
 	}
 
 	// 리뷰 수정
-	@PutMapping("/api/contents/{contentId}/reviews/{reviewId}")
+	@PutMapping("/contents/{contentId}/reviews/{reviewId}")
 	public ResponseEntity<ReviewResponseDto> updateReview(
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId,
@@ -62,7 +68,7 @@ public class ReviewController {
 	}
 
 	// 리뷰 삭제
-	@DeleteMapping("/api/reviews/{reviewId}")
+	@DeleteMapping("/reviews/{reviewId}")
 	public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
 		Long memberId = 1L; // 임시 사용자 ID
 		reviewService.deleteReview(memberId, reviewId);
@@ -70,3 +76,5 @@ public class ReviewController {
 	}
 
 }
+
+//

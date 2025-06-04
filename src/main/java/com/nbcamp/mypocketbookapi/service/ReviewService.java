@@ -63,6 +63,16 @@ public class ReviewService {
 			.collect(Collectors.toList());
 	}
 
+	// 전체 리뷰 조회
+	@Transactional
+	public List<ReviewResponseDto> getAllReviews() {
+		List<Review> reviews = reviewRepository.findAll();
+
+		return reviews.stream()
+			.map(ReviewResponseDto::new)
+			.collect(Collectors.toList());
+	}
+
 
 
 	// 특정 콘텐츠의 특정 리뷰 단건 조회
