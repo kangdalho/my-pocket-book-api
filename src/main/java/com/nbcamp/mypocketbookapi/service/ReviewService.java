@@ -93,7 +93,7 @@ public class ReviewService {
 
 		// 콘텐츠 존재 확인
 		contentRepository.findById(contentId).orElseThrow(
-			()-> new RuntimeException("존재하지 않는 회원입니다")
+			()-> new RuntimeException("존재하지 않는 콘텐츠입니다")
 		);
 
 		// 리뷰 조회 및 작성자 확인
