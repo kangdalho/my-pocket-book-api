@@ -1,7 +1,7 @@
 package com.nbcamp.mypocketbookapi.service;
 
 import com.nbcamp.mypocketbookapi.dto.ContentCreateRequestDto;
-import com.nbcamp.mypocketbookapi.dto.ContentCreateResponseDto;
+import com.nbcamp.mypocketbookapi.dto.ContentResponseDto;
 import com.nbcamp.mypocketbookapi.dto.ContentSearchResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ContentService {
@@ -22,6 +25,7 @@ public class ContentService {
     private final ContentJpaRepository contentJpaRepository;
     private final MemberJpaRepository memberJpaRepository;
 
+    // 컨텐츠 검색 조회
     public ContentSearchResponseDto searchResponseDto(String query, int size) {
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -39,15 +43,20 @@ public class ContentService {
                 .body(ContentSearchResponseDto.class);
     }
 
+    // 컨텐츠 등록
 
+    public ContentResponseDto createContent(ContentCreateRequestDto requestDto, Long memberId) {
 
-    public ContentCreateResponseDto createContent(ContentCreateRequestDto requestDto, Long memberId) {
-
-        // 4. 회원 조회
+        // 회원 조회
         Member member = memberJpaRepository.findById(memberId)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."));
 
-        // 5. Content 객체 생성
+        // ISBN 중복 체크
+        if(contentJpaRepository.existsByIsbn(requestDto.getIsbn())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"이미 등록된 도서입니다.");
+        }
+
+        // Content 객체 생성
         Content content = new Content(
                 member,
                 requestDto.getIsbn(),
@@ -61,9 +70,30 @@ public class ContentService {
 
         Content saved = contentJpaRepository.save(content);
 
-        // 6. 저장 및 반환
-        return new ContentCreateResponseDto(saved);
+        //  저장 및 반환
+        return new ContentResponseDto(saved);
 
 
+    }
+
+    // 전체조회
+    public List<ContentResponseDto> findAllContents(Long memberId) {
+
+        Member member = memberJpaRepository.findById(memberId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."));
+
+        List<Content> contentList = contentJpaRepository.findByMember(member);
+
+        return contentList.stream()
+                .map(content -> new ContentResponseDto(content.getId(),
+                        content.getIsbn(),
+                        content.getTitle(),
+                        content.getThumbnail(),
+                        content.getBookLink(),
+                        content.getSummary(),
+                        content.getSalePrice(),
+                        content.getStatus(),
+                        content.getCreatedAt()))
+                .collect(Collectors.toList());
     }
 }

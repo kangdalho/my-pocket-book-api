@@ -21,7 +21,7 @@ public class Content extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, unique = true)
     private String isbn;
 
     @Column(nullable = false, length = 255)
