@@ -30,4 +30,9 @@ Content-Type: application/json
 
 
 
+### 리뷰 삭제 (DELETE)
+DELETE http://localhost:8080/api/reviews/1
+
+
+
 

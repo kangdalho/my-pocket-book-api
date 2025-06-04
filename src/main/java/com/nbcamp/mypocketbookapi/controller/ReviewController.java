@@ -3,6 +3,7 @@ package com.nbcamp.mypocketbookapi.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,4 +60,13 @@ public class ReviewController {
 		Long memberId = 1L;  // 임시 하드코딩
 		return ResponseEntity.ok(reviewService.updateReview(memberId, contentId, reviewId, reviewRequestDto));
 	}
+
+	// 리뷰 삭제
+	@DeleteMapping("/api/reviews/{reviewId}")
+	public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
+		Long memberId = 1L; // 임시 사용자 ID
+		reviewService.deleteReview(memberId, reviewId);
+		return ResponseEntity.noContent().build();
+	}
+
 }
