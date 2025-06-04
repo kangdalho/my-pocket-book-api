@@ -19,5 +19,4 @@ public class KakaoBookDto {
     private Integer salePrice;
     private String status;
 
-
 }
