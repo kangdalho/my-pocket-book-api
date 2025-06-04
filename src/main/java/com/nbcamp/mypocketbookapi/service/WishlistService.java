@@ -1,6 +1,6 @@
 package com.nbcamp.mypocketbookapi.service;
 
-import com.nbcamp.mypocketbookapi.dto.WishlistResponseDto;
+import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.entity.Wishlist;

@@ -1,7 +1,6 @@
 package com.nbcamp.mypocketbookapi.controller;
 
-import com.nbcamp.mypocketbookapi.dto.WishlistRequestDto;
-import com.nbcamp.mypocketbookapi.dto.WishlistResponseDto;
+import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
 import com.nbcamp.mypocketbookapi.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
