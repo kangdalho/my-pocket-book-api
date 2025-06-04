@@ -4,6 +4,8 @@ import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.entity.Wishlist;
+import com.nbcamp.mypocketbookapi.exception.BusinessException;
+import com.nbcamp.mypocketbookapi.exception.ErrorCode;
 import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.WishlistJpaRepository;
@@ -25,10 +27,10 @@ public class WishlistService {
     public WishlistResponseDto saveWishlist(Long contentId, Long memberId, String isbn) {
 
         Content content = contentRepository.findById(contentId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 콘텐츠입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.CONTENT_NOT_FOUND));
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         Wishlist wishlist = Wishlist.create(content, member, isbn);
         Wishlist saved = wishlistRepository.save(wishlist);
@@ -42,7 +44,7 @@ public class WishlistService {
     public List<WishlistResponseDto> getWishlist(Long memberId) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         List<Wishlist> wishlistList = wishlistRepository.findByMember(member);
 
