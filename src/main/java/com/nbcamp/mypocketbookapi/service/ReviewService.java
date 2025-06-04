@@ -49,14 +49,14 @@ public class ReviewService {
 		return new ReviewResponseDto(savedReview);
 	}
 
-	// 특정 콘텐츠의 모든 리뷰 조회
+	// ISBN 기준으로 모든 리뷰 조회 (모든 사용자가 해당 책에 등록한 리뷰)
 	@Transactional
-	public List<ReviewResponseDto> getReviewsByContentId(Long contentId) {
-		contentRepository.findById(contentId).orElseThrow(
-			() -> new RuntimeException("존재하지 않는 콘텐츠입니다")
-		);
+	public List<ReviewResponseDto> getReviewsByIsbn(String isbn) {
+		List<Review> reviews = reviewRepository.findByContent_Isbn(isbn);
 
-		List<Review> reviews = reviewRepository.findByContentId(contentId);
+		if(reviews.isEmpty()) {
+			throw new RuntimeException("해당 ISBN에 대한 리뷰가 존재하지 않습니다");
+		}
 
 		return reviews.stream()
 			.map(ReviewResponseDto::new)
