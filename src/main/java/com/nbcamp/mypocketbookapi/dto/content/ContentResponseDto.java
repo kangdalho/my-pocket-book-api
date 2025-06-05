@@ -1,4 +1,4 @@
-package com.nbcamp.mypocketbookapi.dto;
+package com.nbcamp.mypocketbookapi.dto.content;
 
 import com.nbcamp.mypocketbookapi.entity.Content;
 import lombok.Getter;
