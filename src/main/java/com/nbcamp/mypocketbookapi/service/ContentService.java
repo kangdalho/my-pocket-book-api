@@ -1,8 +1,8 @@
 package com.nbcamp.mypocketbookapi.service;
 
-import com.nbcamp.mypocketbookapi.dto.ContentCreateRequestDto;
-import com.nbcamp.mypocketbookapi.dto.ContentResponseDto;
-import com.nbcamp.mypocketbookapi.dto.ContentSearchResponseDto;
+import com.nbcamp.mypocketbookapi.dto.content.ContentCreateRequestDto;
+import com.nbcamp.mypocketbookapi.dto.content.ContentResponseDto;
+import com.nbcamp.mypocketbookapi.dto.content.ContentSearchResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
@@ -95,5 +95,12 @@ public class ContentService {
                         content.getStatus(),
                         content.getCreatedAt()))
                 .collect(Collectors.toList());
+    }
+
+    // 단건 조회
+    public ContentResponseDto findContentById(Long memberId, Long contentId) {
+        Content content = contentJpaRepository.findByIdAndMemberId(contentId, memberId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 도서가 존재하지 않습니다."));
+        return new ContentResponseDto(content);
     }
 }

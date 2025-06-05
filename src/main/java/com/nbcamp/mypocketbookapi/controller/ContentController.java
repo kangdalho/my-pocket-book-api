@@ -1,8 +1,8 @@
 package com.nbcamp.mypocketbookapi.controller;
 
-import com.nbcamp.mypocketbookapi.dto.ContentCreateRequestDto;
-import com.nbcamp.mypocketbookapi.dto.ContentResponseDto;
-import com.nbcamp.mypocketbookapi.dto.ContentSearchResponseDto;
+import com.nbcamp.mypocketbookapi.dto.content.ContentCreateRequestDto;
+import com.nbcamp.mypocketbookapi.dto.content.ContentResponseDto;
+import com.nbcamp.mypocketbookapi.dto.content.ContentSearchResponseDto;
 import com.nbcamp.mypocketbookapi.service.ContentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,11 +34,19 @@ public class ContentController {
                 .body(savedContent);
     }
 
-    // 등록된 도서 전체 조회
+    // 회원이 등록한 도서 전체 조회
     @GetMapping("/api/contents")
     public ResponseEntity<List<ContentResponseDto>> findAllContents() {
         Long memberId = 1L;
         List<ContentResponseDto> contents = contentService.findAllContents(memberId);
         return ResponseEntity.ok(contents);
+    }
+
+    // 회원이 등록한 도서 단건 조회
+    @GetMapping("/api/contents/{contentId}")
+    public ResponseEntity<ContentResponseDto> findContentById(@PathVariable Long contentId) {
+        Long memberId = 1L;
+        ContentResponseDto content = contentService.findContentById(memberId, contentId);
+        return ResponseEntity.ok(content);
     }
 }
