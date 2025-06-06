@@ -5,6 +5,7 @@ import com.nbcamp.mypocketbookapi.dto.comment.response.CommentResponse;
 import com.nbcamp.mypocketbookapi.entity.Comment;
 import com.nbcamp.mypocketbookapi.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +20,10 @@ public class CommentController {
     @PostMapping("/api/reviews/{reviewId}/comments")
     public Comment create(@RequestBody CommentRequest request) {
         return commentService.createComment(request);
-
     }
+
     @GetMapping
-    public List<CommentResponse> getAllComments() {
-        return commentService.findAllComments();
+    public ResponseEntity<List<CommentResponse>> getAllComments() {
+        return ResponseEntity.ok(commentService.getAllComments());
     }
 }

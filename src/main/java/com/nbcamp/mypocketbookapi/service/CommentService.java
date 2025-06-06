@@ -41,9 +41,9 @@ public class CommentService {
 
         return commentJpaRepository.save(comment);
     }
-    public List<CommentResponse> findAllComments() {
-        List<Comment> comments = commentJpaRepository.findAll();
-        return comments.stream()
+    @Transactional
+    public List<CommentResponse> getAllComments() {
+        return commentJpaRepository.findAll().stream()
                 .map(CommentResponse::fromEntity)
                 .collect(Collectors.toList());
     }

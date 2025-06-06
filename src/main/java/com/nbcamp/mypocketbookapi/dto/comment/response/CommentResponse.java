@@ -19,6 +19,7 @@ public class CommentResponse {
         this.memberId = memberId;
         this.reviewId = reviewId;
     }
+
     public static CommentResponse fromEntity(Comment comment) {
         return CommentResponse.builder()
                 .id(comment.getId())
