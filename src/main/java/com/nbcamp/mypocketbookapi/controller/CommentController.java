@@ -21,7 +21,6 @@ public class CommentController {
         return commentService.createComment(request);
 
     }
-
     @GetMapping
     public List<CommentResponse> getAllComments() {
         return commentService.findAllComments();
