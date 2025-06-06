@@ -14,6 +14,7 @@ public class CommentResponse {
 
     @Builder
     public CommentResponse(Long id, String text, Long memberId, Long reviewId) {
+
         this.id = id;
         this.text = text;
         this.memberId = memberId;

@@ -66,5 +66,6 @@ public class MemberService {
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
         }
+        memberJpaRepository.delete(member);
     }
 }

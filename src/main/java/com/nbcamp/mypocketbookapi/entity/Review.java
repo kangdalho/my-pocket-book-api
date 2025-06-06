@@ -38,4 +38,11 @@ public class Review extends BaseEntity {
         this.text = text;
     }
 
+    // 리뷰 수정 메서드
+    public void updateReview(int rating, String text) {
+        this.rating = rating;
+        this.text = text;
+    }
+
+
 }

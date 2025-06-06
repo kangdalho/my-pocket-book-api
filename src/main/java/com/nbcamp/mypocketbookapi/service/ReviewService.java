@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.nbcamp.mypocketbookapi.dto.ReviewRequestDto;
-import com.nbcamp.mypocketbookapi.dto.ReviewResponseDto;
+import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
+import com.nbcamp.mypocketbookapi.dto.review.ReviewResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.entity.Review;
@@ -49,14 +49,24 @@ public class ReviewService {
 		return new ReviewResponseDto(savedReview);
 	}
 
-	// 특정 콘텐츠의 모든 리뷰 조회
+	// ISBN 기준으로 모든 리뷰 조회 (모든 사용자가 해당 책에 등록한 리뷰)
 	@Transactional
-	public List<ReviewResponseDto> getReviewsByContentId(Long contentId) {
-		contentRepository.findById(contentId).orElseThrow(
-			() -> new RuntimeException("존재하지 않는 콘텐츠입니다")
-		);
+	public List<ReviewResponseDto> getReviewsByIsbn(String isbn) {
+		List<Review> reviews = reviewRepository.findByContent_Isbn(isbn);
 
-		List<Review> reviews = reviewRepository.findByContentId(contentId);
+		if(reviews.isEmpty()) {
+			throw new RuntimeException("해당 ISBN에 대한 리뷰가 존재하지 않습니다");
+		}
+
+		return reviews.stream()
+			.map(ReviewResponseDto::new)
+			.collect(Collectors.toList());
+	}
+
+	// 전체 리뷰 조회
+	@Transactional
+	public List<ReviewResponseDto> getAllReviews() {
+		List<Review> reviews = reviewRepository.findAll();
 
 		return reviews.stream()
 			.map(ReviewResponseDto::new)
@@ -82,5 +92,56 @@ public class ReviewService {
 		return new ReviewResponseDto(review);
 	}
 
+	// 리뷰 수정
+	@Transactional
+	public ReviewResponseDto updateReview(Long memberId, Long contentId, Long reviewId, ReviewRequestDto requestDto) {
+
+		// 회원 존재 확인
+		memberRepository.findById(memberId).orElseThrow(
+			() -> new RuntimeException("존재하지 않는 회원입니다")
+		);
+
+		// 콘텐츠 존재 확인
+		contentRepository.findById(contentId).orElseThrow(
+			()-> new RuntimeException("존재하지 않는 콘텐츠입니다")
+		);
+
+		// 리뷰 조회 및 작성자 확인
+		Review review = reviewRepository.findByContentIdAndId(contentId, reviewId);
+		if (review == null) {
+			throw new RuntimeException("해당 콘텐츠에서 리뷰를 찾을 수 없습니다");
+		}
+
+		if (!review.getMember().getId().equals(memberId)) {
+			throw new RuntimeException("리뷰 작성자만 수정할 수 있습니다");
+		}
+
+		// 리뷰 수정
+		review.updateReview(requestDto.getRating(), requestDto.getText());
+
+		return new ReviewResponseDto(review);
+	}
+
+	// 리뷰 삭제
+	@Transactional
+	public void deleteReview(Long memberId, Long reviewId) {
+
+		// 회원 존재 확인
+		memberRepository.findById(memberId).orElseThrow(
+			() -> new RuntimeException("존재하지 않는 회원입니다")
+		);
+
+		// 리뷰 존재 확인
+		Review review = reviewRepository.findById(reviewId).orElseThrow(
+			() -> new RuntimeException("존재하지 않는 리뷰 입니다")
+		);
+
+		// 작성자 확인
+		if(!review.getMember().getId().equals(memberId)) {
+			throw new RuntimeException("리뷰 작성자만 삭제할 수 있습니다");
+		}
+
+		reviewRepository.delete(review);
+	}
 
 }

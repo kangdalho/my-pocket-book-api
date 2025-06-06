@@ -1,0 +1,109 @@
+### 리뷰 작성 (POST)
+POST http://localhost:8080/api/contents/1/reviews
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "text": "정말 좋은 책입니다. 강력 추천합니다!"
+}
+
+###
+
+### ISBN 기준으로 모든 리뷰 조회 (GET)
+GET http://localhost:8080/api/books/9788936433598/reviews
+
+
+### ISBN 기준으로 모든 리뷰 조회 (GET) 테스트용
+GET http://localhost:8080/api/books/1/reviews
+
+
+###
+
+### 특정 콘텐츠의 특정 리뷰 단건 조회 (GET)
+GET http://localhost:8080/api/contents/1/reviews/1
+
+###
+
+### 리뷰 수정 (PUT)
+PUT http://localhost:8080/api/contents/1/reviews/1
+Content-Type: application/json
+
+{
+  "rating": 4,
+  "text": "수정된 리뷰입니다. 처음보다는 조금 아쉬운 부분이 있네요."
+}
+
+###
+
+### 리뷰 삭제 (DELETE)
+DELETE http://localhost:8080/api/reviews/1
+
+###
+
+### =================================
+### 추가 테스트 케이스들
+### =================================
+
+### 리뷰 작성 - 다른 콘텐츠
+POST http://localhost:8080/api/contents/2/reviews
+Content-Type: application/json
+
+{
+  "rating": 3,
+  "text": "보통입니다. 기대했던 것보다는 아쉬워요."
+}
+
+###
+
+### 리뷰 작성 - 최소 평점
+POST http://localhost:8080/api/contents/3/reviews
+Content-Type: application/json
+
+{
+  "rating": 1,
+  "text": "별로입니다."
+}
+
+###
+
+### 리뷰 작성 - 긴 텍스트
+POST http://localhost:8080/api/contents/1/reviews
+Content-Type: application/json
+
+{
+  "rating": 5,
+  "text": "이 책은 정말 훌륭합니다. 저자의 깊은 통찰력과 명료한 문체가 돋보이며, 복잡한 개념들을 쉽게 설명해주어 이해하기 쉬웠습니다. 특히 실무에 바로 적용할 수 있는 예제들이 많아서 도움이 되었습니다. 개발자라면 꼭 읽어봐야 할 필독서라고 생각합니다."
+}
+
+###
+
+### ISBN으로 리뷰 조회 - 다른 ISBN
+GET http://localhost:8080/api/books/9788960773431/reviews
+
+###
+
+### 존재하지 않는 콘텐츠 리뷰 조회 (에러 테스트)
+GET http://localhost:8080/api/contents/999/reviews/1
+
+###
+
+### 존재하지 않는 리뷰 조회 (에러 테스트)
+GET http://localhost:8080/api/contents/1/reviews/999
+
+###
+
+### 존재하지 않는 리뷰 수정 (에러 테스트)
+PUT http://localhost:8080/api/contents/1/reviews/999
+Content-Type: application/json
+
+{
+  "rating": 3,
+  "text": "수정 시도"
+}
+
+###
+
+### 존재하지 않는 리뷰 삭제 (에러 테스트)
+DELETE http://localhost:8080/api/reviews/999
+
+###

@@ -28,9 +28,13 @@ public class Wishlist extends BaseEntity {
     private Content content;
 
 
-    public static Wishlist create(Content content, Member member) {
+    public static Wishlist create(Content content, Member member, String isbn) {
         Wishlist wishlist = new Wishlist();
+
         wishlist.content = content;
+        wishlist.member = member;
+        wishlist.isbn = isbn;
+
         return wishlist;
     }
 }
