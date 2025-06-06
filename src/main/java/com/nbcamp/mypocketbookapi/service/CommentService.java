@@ -1,7 +1,7 @@
 package com.nbcamp.mypocketbookapi.service;
 
-import com.nbcamp.mypocketbookapi.dto.CommentRequest;
-import com.nbcamp.mypocketbookapi.dto.CommentResponse;
+import com.nbcamp.mypocketbookapi.dto.comment.request.CommentRequest;
+import com.nbcamp.mypocketbookapi.dto.comment.response.CommentResponse;
 import com.nbcamp.mypocketbookapi.entity.Comment;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.entity.Review;
@@ -11,6 +11,9 @@ import com.nbcamp.mypocketbookapi.repository.ReviewJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -38,10 +41,10 @@ public class CommentService {
 
         return commentJpaRepository.save(comment);
     }
-
-
-
-
-
-
+    public List<CommentResponse> findAllComments() {
+        List<Comment> comments = commentJpaRepository.findAll();
+        return comments.stream()
+                .map(CommentResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
 }
