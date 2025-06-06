@@ -13,19 +13,20 @@ public class CommentResponse {
     private Long reviewId;
 
     @Builder
-    public CommentResponse(Long id, String text, Long memberid, Long reviewId) {
+    public CommentResponse(Long id, String text, Long memberId, Long reviewId) {
+
         this.id = id;
         this.text = text;
         this.memberId = memberId;
         this.reviewId = reviewId;
-
     }
 
     public static CommentResponse fromEntity(Comment comment) {
         return CommentResponse.builder()
                 .id(comment.getId())
                 .text(comment.getText())
-                .memberid(comment.getMember().getId())
+                .memberId(comment.getMember().getId())
+                .reviewId(comment.getReview().getId())
                 .build();
     }
 }

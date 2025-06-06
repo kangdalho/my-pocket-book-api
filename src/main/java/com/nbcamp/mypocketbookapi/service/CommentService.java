@@ -41,10 +41,10 @@ public class CommentService {
 
         return commentJpaRepository.save(comment);
     }
+    @Transactional
     public List<CommentResponse> getAllComments() {
         return commentJpaRepository.findAll().stream()
                 .map(CommentResponse::fromEntity)
                 .collect(Collectors.toList());
     }
-
 }

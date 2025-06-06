@@ -20,7 +20,11 @@ public class CommentController {
     @PostMapping("/api/reviews/{reviewId}/comments")
     public Comment create(@RequestBody CommentRequest request) {
         return commentService.createComment(request);
+    }
 
+    @GetMapping
+    public ResponseEntity<List<CommentResponse>> getAllComments() {
+        return ResponseEntity.ok(commentService.getAllComments());
     }
     @GetMapping
     public ResponseEntity<List<CommentResponse>> getAllComments() {
