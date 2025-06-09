@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -63,5 +64,13 @@ public class WishlistService {
                         .build()
                 )
                 .collect(Collectors.toList());
+    }
+
+    public void deleteByWish(Long id) {
+
+        Wishlist wishlist = wishlistRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.CONTENT_NOT_FOUND));
+
+        wishlistRepository.delete(wishlist);
     }
 }

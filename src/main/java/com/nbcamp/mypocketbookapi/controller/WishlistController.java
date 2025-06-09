@@ -32,6 +32,15 @@ public class WishlistController {
 
         Long memberId = 1L;
         List<WishlistResponseDto> wishlists = wishlistService.getWishlist(memberId);
+
         return ResponseEntity.ok(wishlists);
+    }
+
+    @DeleteMapping("/api/wishlists/{wishlistId}")
+    public ResponseEntity<String> deleteByWish(@PathVariable Long wishlistId) {
+
+        wishlistService.deleteByWish(wishlistId);
+
+        return ResponseEntity.ok("콘텐츠가 등록된 위시리스트에서 삭제되었습니다.");
     }
 }
