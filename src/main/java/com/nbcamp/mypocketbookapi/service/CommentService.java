@@ -8,6 +8,7 @@ import com.nbcamp.mypocketbookapi.entity.Review;
 import com.nbcamp.mypocketbookapi.repository.CommentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.ReviewJpaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,9 +43,28 @@ public class CommentService {
         return commentJpaRepository.save(comment);
     }
     @Transactional
-    public List<CommentResponse> getAllComments() {
-        return commentJpaRepository.findAll().stream()
+    public List<CommentResponse> getCommentsByReviewId(Long reviewId) {
+        Review review = reviewJpaRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("리뷰가 존재하지 않습니다."));
+
+        List<Comment> comments = commentJpaRepository.findByReview(review);
+
+        return comments.stream()
                 .map(CommentResponse::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void updateComment(Long id, String newText) {
+        Comment comment = commentJpaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+        comment.updateText(newText);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = commentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("댓글이 존재하지 않습니다."));
+        commentJpaRepository.delete(comment);
     }
 }
