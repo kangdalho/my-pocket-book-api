@@ -1,6 +1,5 @@
 package com.nbcamp.mypocketbookapi.dto.wishlist;
 
-import com.nbcamp.mypocketbookapi.entity.Wishlist;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -31,10 +30,4 @@ public class WishlistResponseDto {
         this.salePrice = salePrice;
         this.status = status;
     }
-    //    @Builder
-//    public WishlistResponseDto(Long wishlistId, Long contentId, Long memberId) {
-//        this.wishlistId = wishlistId;
-//        this.contentId = contentId;
-//        this.memberId = memberId;
-//    }
 }
