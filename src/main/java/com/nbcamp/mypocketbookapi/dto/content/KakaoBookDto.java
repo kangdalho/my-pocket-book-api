@@ -1,9 +1,8 @@
-package com.nbcamp.mypocketbookapi.dto;
+package com.nbcamp.mypocketbookapi.dto.content;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Getter;
-
-import java.math.BigDecimal;
 
 @Getter
 public class KakaoBookDto {
@@ -11,13 +10,12 @@ public class KakaoBookDto {
     private String isbn;
     private String title;
     private String thumbnail;
-    @JsonProperty("url")
+    @JsonSetter("url")
     private String bookLink;
-    @JsonProperty("contents")
+    @JsonSetter("contents")
     private String summary;
-    @JsonProperty("sale_price")
+    @JsonSetter("sale_price")
     private Integer salePrice;
     private String status;
-
 
 }

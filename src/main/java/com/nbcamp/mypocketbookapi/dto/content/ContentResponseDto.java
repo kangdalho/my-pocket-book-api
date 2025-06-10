@@ -1,12 +1,12 @@
-package com.nbcamp.mypocketbookapi.dto;
+package com.nbcamp.mypocketbookapi.dto.content;
 
 import com.nbcamp.mypocketbookapi.entity.Content;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 @Getter
-public class ContentCreateResponseDto {
+public class ContentResponseDto {
 
     private Long id;
     private String isbn;
@@ -18,7 +18,7 @@ public class ContentCreateResponseDto {
     private String status;
     private LocalDateTime createdAt;
 
-    public ContentCreateResponseDto(Content content) {
+    public ContentResponseDto(Content content) {
         this.id = content.getId();
         this.isbn =content.getIsbn();
         this.title = content.getTitle();
@@ -30,4 +30,16 @@ public class ContentCreateResponseDto {
         this.createdAt = content.getCreatedAt();
     }
 
+
+    public ContentResponseDto(Long id, String isbn, String title, String thumbnail, String bookLink, String summary, Integer salePrice, String status, LocalDateTime createdAt) {
+        this.id = id;
+        this.isbn = isbn;
+        this.title = title;
+        this.thumbnail = thumbnail;
+        this.bookLink = bookLink;
+        this.summary = summary;
+        this.salePrice = salePrice;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
 }

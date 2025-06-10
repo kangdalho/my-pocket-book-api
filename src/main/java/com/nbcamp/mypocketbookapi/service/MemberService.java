@@ -9,6 +9,8 @@ import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.exception.BusinessException;
 import com.nbcamp.mypocketbookapi.exception.ErrorCode;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,7 +45,7 @@ public class MemberService {
 
     public LoginResponseDto login(@Valid LoginRequestDto requestDto) {
         Member member = memberJpaRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new BusinessException(ErrorCode.EMAIL_MISMATCH));
+                .orElseThrow(() -> new BusinessException(ErrorCode.SIGNUP_REQUIRED));
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
         }
@@ -57,12 +59,11 @@ public class MemberService {
     }
 
     public void logout() {
-
     }
 
-    public void withdraw(WithdrawRequestDto requestDto) {
-        Member member = memberJpaRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new BusinessException(ErrorCode.EMAIL_MISMATCH));
+    public void withdraw(WithdrawRequestDto requestDto, Long memberId) {
+        Member member = memberJpaRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
         }
