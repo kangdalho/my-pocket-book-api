@@ -1,6 +1,7 @@
 package com.nbcamp.mypocketbookapi.service;
 
-import com.nbcamp.mypocketbookapi.dto.ReviewLikeResponseDto;
+
+import com.nbcamp.mypocketbookapi.dto.reviewlike.ReviewLikeResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.entity.Review;
 import com.nbcamp.mypocketbookapi.entity.ReviewLike;
@@ -56,7 +57,7 @@ public class ReviewLikeService {
                 () -> new RuntimeException("해당 회원을 찾을수 없습니다."));
 
         List<ReviewLikeResponseDto> responseDtos = new ArrayList<>(); // ReviewLikeResponseDto 타입의 요소들을 담을 수 있는 List(리스트) 인터페이스 타입의 변수 responseDtos를 선언하고, = 연산자를 사용해 실제로 데이터를 담을 수 있도록 ArrayList 객체를 생성해서 저장한다.
-        List<ReviewLike> reviewLikes =  reviewLikeRepository.findByMemeber(member); // reviewLikeRepository에서 해당 member가 좋아요한 리뷰 목록을 조회하고, 그 결과(List<ReviewLike>)를 reviewLikes 변수에 = 연산자를 이용해 저장한다.
+        List<ReviewLike> reviewLikes =  reviewLikeRepository.findByMember(member); // reviewLikeRepository에서 해당 member가 좋아요한 리뷰 목록을 조회하고, 그 결과(List<ReviewLike>)를 reviewLikes 변수에 = 연산자를 이용해 저장한다.
         for(ReviewLike reviewLike : reviewLikes){
             Review review = reviewLike.getReview();
             ReviewLikeResponseDto reviewLikeResponseDto = new ReviewLikeResponseDto(

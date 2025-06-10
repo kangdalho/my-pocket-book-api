@@ -1,6 +1,6 @@
 package com.nbcamp.mypocketbookapi.controller;
 
-import com.nbcamp.mypocketbookapi.dto.ReviewLikeResponseDto;
+import com.nbcamp.mypocketbookapi.dto.reviewlike.ReviewLikeResponseDto;
 import com.nbcamp.mypocketbookapi.service.ReviewLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
