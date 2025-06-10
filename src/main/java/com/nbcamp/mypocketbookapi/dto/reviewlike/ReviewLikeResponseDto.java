@@ -8,7 +8,10 @@ import lombok.Getter;
 
 public class ReviewLikeResponseDto {
     private Long reviewId;
-    private String message;
+    private Long contentId;
+    private String text;
+    private int rating;
+
 }
 
 
