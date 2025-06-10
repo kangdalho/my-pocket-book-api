@@ -8,8 +8,6 @@ import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MessageResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
-import com.nbcamp.mypocketbookapi.exception.BusinessException;
-import com.nbcamp.mypocketbookapi.exception.ErrorCode;
 import com.nbcamp.mypocketbookapi.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -44,7 +42,6 @@ public class MemberController {
             HttpServletRequest request
     ) {
         LoginResponseDto login = memberService.login(requestDto); // 로그인 검증 + 사용자 정보 반환
-
         /*
         Session의 디폴트 값은 true
         Session이 request에 존재하면 기존 Session 반환, 없으면 새로 생성하여 반환
@@ -58,7 +55,7 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity<MemberResponseDto> getMyInfo(
-           @LoginMember Long memberId
+            @LoginMember Long memberId
     ) {
         // 서비스에서 사용자 정보 조회
         MemberResponseDto myInfo = memberService.getMyInfo(memberId);
@@ -70,10 +67,9 @@ public class MemberController {
             HttpServletRequest request
     ) {
         HttpSession session = request.getSession(false); // false -> Session 새로 생성하지 않고 null 반환
-        if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED);
+        if (session != null) {
+            session.invalidate(); // 세션 무효화 -> 로그아웃
         }
-        session.invalidate(); // 세션 무효화 -> 로그아웃
         return ResponseEntity.ok(new MessageResponseDto("로그아웃이 완료되었습니다."));
     }
 
@@ -81,18 +77,16 @@ public class MemberController {
     public ResponseEntity<MessageResponseDto> withdraw(
             @Valid
             @RequestBody WithdrawRequestDto requestDto,
+            @LoginMember Long memberId,
             HttpServletRequest request
     ) {
-        HttpSession session = request.getSession(false); // false -> Session 새로 생성하지 않고 null 반환
-        if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED);
-        }
-        // 세션에서 사용자 ID 꺼내기
-        Long memberId = (Long) session.getAttribute(Const.LOGIN_USER);
         // 서비스 로직으로 탈퇴 처리 (비밀번호 확인)
         memberService.withdraw(requestDto, memberId);
-        // 탈퇴 후 세션 무효화
-        session.invalidate();
+
+        HttpSession session = request.getSession(false); // false -> Session 새로 생성하지 않고 null 반환
+        if (session != null) {
+            session.invalidate(); // 세션 무효화 -> 회원탈퇴
+        }
         return ResponseEntity.ok(new MessageResponseDto("회원탈퇴가 완료되었습니다."));
     }
 }
