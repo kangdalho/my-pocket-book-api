@@ -29,10 +29,14 @@ public class ReviewService {
 	@Transactional
 	public ReviewResponseDto createReview(Long memberId, Long contentId, ReviewRequestDto requestDto ) {
 
+		// memberRepository.findById(memberId)
+		// SELECT m.* FROM member m WHERE m.id = ?
 		Member member = memberRepository.findById(memberId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 회원입니다")
 		);
 
+		// contentRepository.findById(contentId)
+		// SELECT c.* FROM content c WHERE c.id = ?
 		Content content = contentRepository.findById(contentId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 콘텐츠입니다")
 		);
@@ -44,6 +48,8 @@ public class ReviewService {
 			.text(requestDto.getText())
 			.build();
 
+		// reviewRepository.save(review)
+		// INSERT INTO review (member_id, content_id, rating, text) VALUES (?, ?, ?, ?)
 		Review savedReview = reviewRepository.save(review);
 
 		return new ReviewResponseDto(savedReview);
@@ -52,6 +58,8 @@ public class ReviewService {
 	// ISBN 기준으로 모든 리뷰 조회 (모든 사용자가 해당 책에 등록한 리뷰)
 	@Transactional
 	public List<ReviewResponseDto> getReviewsByIsbn(String isbn) {
+		// reviewRepository.findByContent_Isbn(isbn)
+		// SELECT r.* FROM review r JOIN content c ON r.content_id = c.id WHERE c.isbn = ?
 		List<Review> reviews = reviewRepository.findByContent_Isbn(isbn);
 
 		if(reviews.isEmpty()) {
@@ -66,6 +74,8 @@ public class ReviewService {
 	// 전체 리뷰 조회
 	@Transactional
 	public List<ReviewResponseDto> getAllReviews() {
+		// reviewRepository.findAll()
+		// SELECT r.* FROM review r
 		List<Review> reviews = reviewRepository.findAll();
 
 		return reviews.stream()
@@ -79,10 +89,14 @@ public class ReviewService {
 	@Transactional
 	public ReviewResponseDto getReviewByContentIdAndReviewId(Long contentId, Long reviewId) {
 
+		// contentRepository.findById(contentId)
+		// SELECT c.* FROM content c WHERE c.id = ?
 		contentRepository.findById(contentId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 콘텐츠입니다")
 		);
 
+		// reviewRepository.findByContentIdAndId(contentId, reviewId)
+		// SELECT r.* FROM review r WHERE r.content_id = ? AND r.id = ?
 		Review review = reviewRepository.findByContentIdAndId(contentId, reviewId);
 
 		if (review == null) {
@@ -96,16 +110,22 @@ public class ReviewService {
 	@Transactional
 	public ReviewResponseDto updateReview(Long memberId, Long contentId, Long reviewId, ReviewRequestDto requestDto) {
 
+		// memberRepository.findById(memberId)
+		// SELECT m.* FROM member m WHERE m.id = ?
 		// 회원 존재 확인
 		memberRepository.findById(memberId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 회원입니다")
 		);
 
+		// contentRepository.findById(contentId)
+		// SELECT c.* FROM content c WHERE c id = ?
 		// 콘텐츠 존재 확인
 		contentRepository.findById(contentId).orElseThrow(
 			()-> new RuntimeException("존재하지 않는 콘텐츠입니다")
 		);
 
+		// reviewRepository.findByContentIdAndId(contentId, reviewId)
+		// SELECT r. FROM review r WHERE r.content_id = ? AND r.id = ?
 		// 리뷰 조회 및 작성자 확인
 		Review review = reviewRepository.findByContentIdAndId(contentId, reviewId);
 		if (review == null) {
@@ -116,6 +136,8 @@ public class ReviewService {
 			throw new RuntimeException("리뷰 작성자만 수정할 수 있습니다");
 		}
 
+		// review.updateReview(...)  메서드 호출 후 @Transactional에 의해 변경 감지
+		// UPDATE review SET rating = ?, text =? where id = ?
 		// 리뷰 수정
 		review.updateReview(requestDto.getRating(), requestDto.getText());
 
@@ -126,21 +148,28 @@ public class ReviewService {
 	@Transactional
 	public void deleteReview(Long memberId, Long reviewId) {
 
+		// memberRepository.findById(memberId)
+		// SELECT m.* FROM member m WHERE m.id = ?
 		// 회원 존재 확인
 		memberRepository.findById(memberId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 회원입니다")
 		);
 
+		// reviewRepository.findById(reviewId)
+		// SELECT r.* FROM review r WHERE r.id = ?
 		// 리뷰 존재 확인
 		Review review = reviewRepository.findById(reviewId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 리뷰 입니다")
 		);
+
 
 		// 작성자 확인
 		if(!review.getMember().getId().equals(memberId)) {
 			throw new RuntimeException("리뷰 작성자만 삭제할 수 있습니다");
 		}
 
+		// reviewRepository.delete(review)
+		// DELETE FROM review WHERE id = ?
 		reviewRepository.delete(review);
 	}
 
