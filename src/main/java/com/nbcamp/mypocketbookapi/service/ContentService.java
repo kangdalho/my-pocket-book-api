@@ -55,8 +55,13 @@ public class ContentService {
         Member member = memberJpaRepository.findById(memberId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.CONTENT_NOT_FOUND));
 
-        // ISBN 중복 체크 이미등록된 경우 예외발생
-        if(contentJpaRepository.existsByIsbn(requestDto.getIsbn())) {
+//        // ISBN 중복 체크 이미등록된 경우 예외발생
+//        if(contentJpaRepository.existsByIsbn(requestDto.getIsbn())) {
+//            throw new BusinessException(ErrorCode.DUPLICATE_CONTENT);
+//        }
+
+        // ISBN 중복체크(같은 회원이 동일한 ISBN으로 등록 하는 경우만 방지)
+        if(contentJpaRepository.existsByMemberAndIsbn(member, requestDto.getIsbn())) {
             throw new BusinessException(ErrorCode.DUPLICATE_CONTENT);
         }
 
