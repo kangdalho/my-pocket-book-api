@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nbcamp.mypocketbookapi.common.LoginMember;
 import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
 import com.nbcamp.mypocketbookapi.dto.review.ReviewResponseDto;
 import com.nbcamp.mypocketbookapi.service.ReviewService;
@@ -28,10 +29,11 @@ public class ReviewController {
 	// 리뷰 작성
 	@PostMapping("/contents/{contentId}/reviews")
 	public ResponseEntity<ReviewResponseDto> createReview(
+		@LoginMember Long memberId, // 세션에서 로그인한 사용자 ID 자동 주입
+									// @param memberId 로그인한 사용자ID (@LoginMember 어노테이션으로 세션에서 자동주입)
 		@PathVariable Long contentId,
 		@RequestBody ReviewRequestDto reviewRequestDto
 	) {
-		Long memberId = 1L; // 임시 사용자 ID
 		return ResponseEntity.ok(reviewService.createReview(memberId, contentId, reviewRequestDto));
 	}
 
@@ -59,18 +61,20 @@ public class ReviewController {
 	// 리뷰 수정
 	@PutMapping("/contents/{contentId}/reviews/{reviewId}")
 	public ResponseEntity<ReviewResponseDto> updateReview(
+		@LoginMember Long memberId, // 세션에서 로그인한 사용자 ID 자동 주입
+									// @param memberId 로그인한 사용자ID (@LoginMember 어노테이션으로 세션에서 자동 주입)
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId,
 		@RequestBody ReviewRequestDto reviewRequestDto
 	) {
-		Long memberId = 1L;  // 임시 하드코딩
 		return ResponseEntity.ok(reviewService.updateReview(memberId, contentId, reviewId, reviewRequestDto));
 	}
 
 	// 리뷰 삭제
 	@DeleteMapping("/reviews/{reviewId}")
-	public ResponseEntity<Void> deleteReview(@PathVariable Long reviewId) {
-		Long memberId = 1L; // 임시 사용자 ID
+	public ResponseEntity<Void> deleteReview(
+		@LoginMember Long memberId, // 세션에서 로그인한 사용자 ID 자동주입
+		@PathVariable Long reviewId) {
 		reviewService.deleteReview(memberId, reviewId);
 		return ResponseEntity.noContent().build();
 	}
