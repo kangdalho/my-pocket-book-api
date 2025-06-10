@@ -14,4 +14,6 @@ public interface ContentJpaRepository extends JpaRepository<Content, Long> {
     boolean existsByIsbn(String isbn);
 
     Optional<Content> findByIdAndMemberId(Long contentId, Long memberId);
+
+    boolean existsByMemberAndIsbn(Member member, String isbn);
 }
