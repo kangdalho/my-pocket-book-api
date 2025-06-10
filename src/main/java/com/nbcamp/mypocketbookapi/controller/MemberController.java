@@ -1,6 +1,7 @@
 package com.nbcamp.mypocketbookapi.controller;
 
 import com.nbcamp.mypocketbookapi.common.Const;
+import com.nbcamp.mypocketbookapi.common.LoginMember;
 import com.nbcamp.mypocketbookapi.dto.member.request.LoginRequestDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.WithdrawRequestDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
@@ -57,14 +58,8 @@ public class MemberController {
 
     @GetMapping("/me")
     public ResponseEntity<MemberResponseDto> getMyInfo(
-            HttpServletRequest request
+           @LoginMember Long memberId
     ) {
-        HttpSession session = request.getSession(false); // false -> Session 새로 생성하지 않고 null 반환
-        if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED); // 세션 없거나 로그인 정보 없을 경우 예외
-        }
-        // 세션에서 사용자 ID 꺼내기
-        Long memberId = (Long) session.getAttribute(Const.LOGIN_USER);
         // 서비스에서 사용자 정보 조회
         MemberResponseDto myInfo = memberService.getMyInfo(memberId);
         return new ResponseEntity<>(myInfo, HttpStatus.OK);
