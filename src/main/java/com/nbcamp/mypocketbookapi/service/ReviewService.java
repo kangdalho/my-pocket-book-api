@@ -3,6 +3,8 @@ package com.nbcamp.mypocketbookapi.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
@@ -71,18 +73,15 @@ public class ReviewService {
 			.collect(Collectors.toList());
 	}
 
-	// 전체 리뷰 조회
+	// 전체 리뷰 조회 (페이징 기능 추가 및 N+1 문제 개선)
 	@Transactional
-	public List<ReviewResponseDto> getAllReviews() {
-		// reviewRepository.findAll()
-		// SELECT r.* FROM review r
-		List<Review> reviews = reviewRepository.findAll();
+	public Page<ReviewResponseDto> getAllReviews(Pageable pageable) {
+		// reviewRepository.findAllWithMemberAndContent(pageable)
+		// SELECT r FROM Review r JOIN FETCH r.member JOIN FETCH r.content
+		Page<Review> reviewsPage = reviewRepository.findAllWithMemberAndContent(pageable);
 
-		return reviews.stream()
-			.map(ReviewResponseDto::new)
-			.collect(Collectors.toList());
+		return reviewsPage.map(ReviewResponseDto::new);
 	}
-
 
 
 	// 특정 콘텐츠의 특정 리뷰 단건 조회
