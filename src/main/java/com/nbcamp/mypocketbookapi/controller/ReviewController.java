@@ -2,6 +2,9 @@ package com.nbcamp.mypocketbookapi.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +33,7 @@ public class ReviewController {
 	@PostMapping("/contents/{contentId}/reviews")
 	public ResponseEntity<ReviewResponseDto> createReview(
 		@LoginMember Long memberId, // 세션에서 로그인한 사용자 ID 자동 주입
-									// @param memberId 로그인한 사용자ID (@LoginMember 어노테이션으로 세션에서 자동주입)
+		// @param memberId 로그인한 사용자ID (@LoginMember 어노테이션으로 세션에서 자동주입)
 		@PathVariable Long contentId,
 		@RequestBody ReviewRequestDto reviewRequestDto
 	) {
@@ -43,10 +46,12 @@ public class ReviewController {
 		return ResponseEntity.ok(reviewService.getReviewsByIsbn(isbn));
 	}
 
-	// 전체 리뷰 조회
+	// 전체 리뷰 조회 (페이징 기능 추가)
 	@GetMapping("/reviews")
-	public ResponseEntity<List<ReviewResponseDto>> getAllReviews() {
-		return ResponseEntity.ok(reviewService.getAllReviews());
+	public ResponseEntity<Page<ReviewResponseDto>> getAllReviews(
+		@PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable
+	) {
+		return ResponseEntity.ok(reviewService.getAllReviews(pageable));
 	}
 
 	// 특정 콘텐츠의 특정 리뷰 단건 조회
@@ -62,7 +67,7 @@ public class ReviewController {
 	@PutMapping("/contents/{contentId}/reviews/{reviewId}")
 	public ResponseEntity<ReviewResponseDto> updateReview(
 		@LoginMember Long memberId, // 세션에서 로그인한 사용자 ID 자동 주입
-									// @param memberId 로그인한 사용자ID (@LoginMember 어노테이션으로 세션에서 자동 주입)
+		// @param memberId 로그인한 사용자ID (@LoginMember 어노테이션으로 세션에서 자동 주입)
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId,
 		@RequestBody ReviewRequestDto reviewRequestDto
@@ -80,5 +85,3 @@ public class ReviewController {
 	}
 
 }
-
-///
