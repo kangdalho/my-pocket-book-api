@@ -1,5 +1,7 @@
 package com.nbcamp.mypocketbookapi.exception;
 
+import com.nbcamp.mypocketbookapi.common.BaseResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -7,36 +9,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 //예외 전역처리 어노테이션
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // BusinessException 발생 시 공통적으로 처리하는 예외 핸들러
+    // 도메인별 예외 핸들링 필요시 BusinessException Handler 상단에 각각의 도메인 Exception Handler 작성
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException ex) {
-        // BusinessException 안에 정의된 ErrorCode를 꺼낸다.
+    public ResponseEntity<BaseResponse<?>> handleBusinessException(BusinessException ex) {
         ErrorCode errorCode = ex.getErrorCode();
-        // 에러 코드와 메시지를 포함한 ErrorResponse 객체 생성
-        ErrorResponse errorResponse = new ErrorResponse(errorCode.getCode(), errorCode.getMessage());
-        // HTTP 상태 코드와 함께 ErrorResponse를 응답으로 반환
-        return ResponseEntity.status(errorCode.getHttpStatus()).body(errorResponse);
+        log.warn("[{}] {} - {}", ex.getErrorCode().getDomainType(), errorCode.getHttpStatus().value(), errorCode.getMessage());
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.fail(errorCode, errorCode.getMessage()));
     }
-//    // 이미 사용중인 이메일로 회원가입 할 때 던지는 커스텀 예외처리
-//    @ExceptionHandler(EmailAlreadyExistsException.class)
-//    public ResponseEntity<?> handleMemberNotFound(EmailAlreadyExistsException ex) {
-//        // 400 Bad Request로 처리 (로그인 실패 사유 전달)
-//        return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
-//    }
-//    // 이미 사용중인 닉네임으로 회원가입 할 때 던지는 커스텀 예외처리
-//    @ExceptionHandler(NicknameAlreadyExistsException.class)
-//    public ResponseEntity<?> handleMemberNotFound(NicknameAlreadyExistsException ex) {
-//        // 400 Bad Request로 처리 (로그인 실패 사유 전달)
-//        return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
-//    }
-//    // 비밀번호가 일치하지 않을 때 던지는 커스텀 예외처리
-//    @ExceptionHandler(PasswordMismatchException.class)
-//    public ResponseEntity<?> handleMemberNotFound(PasswordMismatchException ex) {
-//        // 400 Bad Request로 처리 (로그인 실패 사유 전달)
-//        return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
-//    }
+
     // @Valid 유효성 검증에 실패했을 때 발생하는 예외 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException ex) {
