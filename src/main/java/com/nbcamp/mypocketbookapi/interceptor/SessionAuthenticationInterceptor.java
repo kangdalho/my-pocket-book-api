@@ -9,9 +9,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SessionAuthenticationInterceptor implements HandlerInterceptor {
@@ -24,9 +26,10 @@ public class SessionAuthenticationInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
+            log.warn("[{}] {} - {}", ErrorCode.UNAUTHORIZED.getDomainType(), ErrorCode.UNAUTHORIZED.getHttpStatus().value(), ErrorCode.UNAUTHORIZED.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json; charset=UTF-8");
-            BaseResponse<Void> errorResponse = BaseResponse.fail(ErrorCode.UNAUTHORIZED,ErrorCode.UNAUTHORIZED.getMessage());
+            BaseResponse<Void> errorResponse = BaseResponse.fail(ErrorCode.UNAUTHORIZED);
             String jsonResponse = objectMapper.writeValueAsString(errorResponse);
             response.getWriter().write(jsonResponse);
             return false; // false -> controller 실행 x
