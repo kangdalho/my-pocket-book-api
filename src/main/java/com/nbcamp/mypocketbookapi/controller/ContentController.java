@@ -1,5 +1,6 @@
 package com.nbcamp.mypocketbookapi.controller;
 
+import com.nbcamp.mypocketbookapi.common.LoginMember;
 import com.nbcamp.mypocketbookapi.dto.content.ContentCreateRequestDto;
 import com.nbcamp.mypocketbookapi.dto.content.ContentResponseDto;
 import com.nbcamp.mypocketbookapi.dto.content.ContentSearchResponseDto;
@@ -29,10 +30,9 @@ public class ContentController {
     @PostMapping("/api/contents")
     // 등록이기때문에 defaultvalue가 없어도 된다 size가 의미가없음
     // 회원 id를 url 쿼리 파라미터로 받아옴 서비스에서 실제로직
-    public ResponseEntity<ContentResponseDto> createContent(@Valid @RequestBody ContentCreateRequestDto requestDto, @RequestParam Long memberId) {
+    public ResponseEntity<ContentResponseDto> createContent(@Valid @RequestBody ContentCreateRequestDto requestDto, @LoginMember Long memberId) {
        // 외부 api 에서 검색
         ContentResponseDto savedContent = contentService.createContent(requestDto, memberId);
-
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedContent);
     }
@@ -40,8 +40,7 @@ public class ContentController {
     // 회원이 등록한 도서 전체 조회
     @GetMapping("/api/contents")
     // List<ContentResponseDto>는 콘텐츠 목록을 DTO 형태로 담은 리스트
-    public ResponseEntity<List<ContentResponseDto>> findAllContents() {
-        Long memberId = 1L;
+    public ResponseEntity<List<ContentResponseDto>> findAllContents(@LoginMember Long memberId) {
         // 서비스에 회원 id를 기준으로 컨텐츠 목록 요청
         List<ContentResponseDto> contents = contentService.findAllContents(memberId);
         return ResponseEntity.ok(contents);
@@ -49,16 +48,14 @@ public class ContentController {
 
     // 회원이 등록한 도서 단건 조회
     @GetMapping("/api/contents/{contentId}")
-    public ResponseEntity<ContentResponseDto> findContentById(@PathVariable Long contentId) {
-        Long memberId = 1L;
+    public ResponseEntity<ContentResponseDto> findContentById(@PathVariable Long contentId, @LoginMember Long memberId) {
         ContentResponseDto content = contentService.findContentById(memberId, contentId);
         return ResponseEntity.ok(content);
     }
 
     // 회원이 등록한 도서 삭제
     @DeleteMapping("/api/contents/{contentId}")
-    public ResponseEntity<String> deleteContent(@PathVariable Long contentId) {
-        Long memberId = 1L;
+    public ResponseEntity<String> deleteContent(@PathVariable Long contentId, @LoginMember Long memberId) {
         contentService.deleteContent(memberId, contentId);
         return ResponseEntity.ok("삭제됬습니다.");
     }
