@@ -1,40 +1,43 @@
 package com.nbcamp.mypocketbookapi.exception;
 
-
+import com.nbcamp.mypocketbookapi.common.BaseCode;
+import com.nbcamp.mypocketbookapi.common.DomainType;
 import org.springframework.http.HttpStatus;
 
-public enum ErrorCode {
-    EMAIL_ALREADY_EXISTS("M001", "이미 사용중인 이메일입니다.", HttpStatus.CONFLICT),
-    MEMBER_NOT_FOUND("M002", "회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    NICKNAME_ALREADY_EXISTS("M003", "이미 사용중인 닉네임입니다.", HttpStatus.CONFLICT),
-    EMAIL_MISMATCH("M004", "이메일이 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
-    PASSWORD_MISMATCH("M005", "비밀번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED),
-    CONTENT_NOT_FOUND("M006", "콘텐츠(도서)가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
-    UNAUTHORIZED_CONTENT_DELETION("M007", "작성자만 삭제 할수있습니다.", HttpStatus.FORBIDDEN),
-    DUPLICATE_CONTENT("M008", "이미 등록된 도서입니다.", HttpStatus.CONFLICT),
-    SIGNUP_REQUIRED("A001", "회원가입이 필요합니다.",HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED("A002", "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
+public enum ErrorCode implements BaseCode {
+    EMAIL_ALREADY_EXISTS(DomainType.MEMBER, HttpStatus.CONFLICT, "이미 사용중인 이메일입니다."),
+    MEMBER_NOT_FOUND(DomainType.MEMBER, HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."),
+    NICKNAME_ALREADY_EXISTS(DomainType.MEMBER, HttpStatus.CONFLICT, "이미 사용중인 닉네임입니다."),
+    EMAIL_MISMATCH(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "이메일이 일치하지 않습니다."),
+    PASSWORD_MISMATCH(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    CONTENT_NOT_FOUND(DomainType.CONTENT, HttpStatus.NOT_FOUND, "콘텐츠(도서)가 존재하지 않습니다."),
+    UNAUTHORIZED_CONTENT_DELETION(DomainType.CONTENT, HttpStatus.FORBIDDEN, "작성자만 삭제 할수있습니다."),
+    DUPLICATE_CONTENT(DomainType.CONTENT, HttpStatus.CONFLICT, "이미 등록된 도서입니다."),
+    SIGNUP_REQUIRED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "회원가입이 필요합니다."),
+    UNAUTHORIZED(DomainType.AUTH, HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 
-    private final String code;
-    private final String message;
+    private final DomainType domainType;
     private final HttpStatus httpStatus;
+    private final String message;
 
-    ErrorCode(String code, String message, HttpStatus httpStatus) {
-        this.code = code;
-        this.message = message;
+    ErrorCode(DomainType domainType, HttpStatus httpStatus, String message) {
+        this.domainType = domainType;
         this.httpStatus = httpStatus;
+        this.message = message;
     }
 
-    public String getCode() {
-        return code;
+    @Override
+    public DomainType getDomainType() {
+        return this.domainType;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
+    @Override
     public HttpStatus getHttpStatus() {
-        return httpStatus;
+        return this.httpStatus;
     }
 
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
 }
