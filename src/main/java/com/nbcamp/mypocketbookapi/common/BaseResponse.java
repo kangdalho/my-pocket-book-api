@@ -23,28 +23,28 @@ public class BaseResponse<T> {
         this.data = data;
     }
 
-    public static <T> BaseResponse<T> success(BaseCode code, String message, T data) {
+    public static <T> BaseResponse<T> success(BaseCode code, T data) {
         return BaseResponse.<T>builder()
                 .success(true)
                 .status(code.getHttpStatus().value())
-                .message(message)
+                .message(code.getMessage())
                 .data(data)
                 .build();
     }
 
-    public static <T> BaseResponse<T> success(BaseCode code, String message) {
+    public static <T> BaseResponse<T> success(BaseCode code) {
         return BaseResponse.<T>builder()
                 .success(true)
                 .status(code.getHttpStatus().value())
-                .message(message)
+                .message(code.getMessage())
                 .build();
     }
 
-    public static <T> BaseResponse<T> fail(BaseCode code, String message) {
+    public static <T> BaseResponse<T> fail(BaseCode code) {
         return BaseResponse.<T>builder()
                 .success(false)
                 .status(code.getHttpStatus().value())
-                .message(message)
+                .message(code.getMessage())
                 .build();
     }
 }

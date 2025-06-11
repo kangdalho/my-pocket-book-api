@@ -47,7 +47,7 @@ public class MemberController {
     ) {
         MemberResponseDto signup = memberService.signup(requestDto);
         return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_SIGNUP,"회원가입이 완료되었습니다.", signup));
+                .ok(BaseResponse.success(ResponseCode.SUCCESS_SIGNUP, signup));
     }
 
     @Operation(summary = "회원 로그인", description = "아이디와 비밀번호를 사용하여 로그인하고 세션을 생성합니다.",
@@ -71,7 +71,7 @@ public class MemberController {
         Long id = login.getId();
         session.setAttribute(Const.LOGIN_USER, id);
         return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_LOGIN,"로그인을 성공하였습니다.",login));
+                .ok(BaseResponse.success(ResponseCode.SUCCESS_LOGIN, login));
     }
 
     @Operation(summary = "회원 정보 조회", description = "세션 ID를 기반으로 특정 회원의 상세 정보를 조회합니다.",
@@ -89,7 +89,7 @@ public class MemberController {
         // 서비스에서 사용자 정보 조회
         MemberResponseDto myInfo = memberService.getMyInfo(memberId);
         return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_FIND_ME,"사용자 정보를 조회하였습니다.",myInfo));
+                .ok(BaseResponse.success(ResponseCode.SUCCESS_FIND_ME, myInfo));
     }
 
     @PostMapping("/logout")
@@ -101,7 +101,7 @@ public class MemberController {
             session.invalidate(); // 세션 무효화 -> 로그아웃
         }
         return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_LOGOUT,"로그아웃 하였습니다."));
+                .ok(BaseResponse.success(ResponseCode.SUCCESS_LOGOUT));
     }
 
     @Operation(summary = "회원 삭제", description = "특정 회원을 삭제합니다.",
@@ -126,6 +126,6 @@ public class MemberController {
             session.invalidate(); // 세션 무효화 -> 회원탈퇴
         }
         return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_WITHDRAW,"회원탈퇴 되었습니다."));
+                .ok(BaseResponse.success(ResponseCode.SUCCESS_WITHDRAW));
     }
 }

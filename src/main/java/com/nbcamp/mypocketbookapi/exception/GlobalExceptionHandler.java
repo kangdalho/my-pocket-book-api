@@ -13,14 +13,14 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     // BusinessException 발생 시 공통적으로 처리하는 예외 핸들러
-    // 도메인별 예외 핸들링 필요시 BusinessException Handler 상단에 각각의 도메인 Exception Handler 작성
+    // 도메인별 예외 핸들링 필요시 BusinessException Handler 상단에(순서중요함) 각각의 도메인 Exception Handler 작성
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<BaseResponse<?>> handleBusinessException(BusinessException ex) {
         ErrorCode errorCode = ex.getErrorCode();
         log.warn("[{}] {} - {}", ex.getErrorCode().getDomainType(), errorCode.getHttpStatus().value(), errorCode.getMessage());
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, errorCode.getMessage()));
+                .body(BaseResponse.fail(errorCode));
     }
 
     // @Valid 유효성 검증에 실패했을 때 발생하는 예외 처리
