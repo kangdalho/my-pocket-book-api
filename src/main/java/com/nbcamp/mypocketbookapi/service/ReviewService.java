@@ -65,7 +65,7 @@ public class ReviewService {
 	// ISBN 기준으로 모든 리뷰 조회 (페이징 추가 및 N+1 문제 개선)
 	@Transactional(readOnly = true) // 읽기 전용 트랜잭션으로 설정하여 성능을 최적화합니다.
 	public Page<ReviewResponseDto> getReviewsByIsbn(String isbn, Pageable pageable) {
-		// ... (기존 코드 유지)
+
 		Page<Review> reviewsPage = reviewRepository.findByContent_IsbnWithMemberAndContent(isbn, pageable);
 
 		if(reviewsPage.isEmpty() && pageable.getPageNumber() == 0) {
@@ -78,7 +78,7 @@ public class ReviewService {
 	// 전체 리뷰 조회 (페이징 기능 추가 및 N+1 문제 개선)
 	@Transactional(readOnly = true) // 읽기 전용 트랜잭션으로 설정하여 성능을 최적화합니다.
 	public Page<ReviewResponseDto> getAllReviews(Pageable pageable) {
-		// ... (기존 코드 유지)
+
 		Page<Review> reviewsPage = reviewRepository.findAllWithMemberAndContent(pageable);
 		return reviewsPage.map(ReviewResponseDto::new);
 	}
@@ -87,7 +87,7 @@ public class ReviewService {
 	// 특정 콘텐츠의 특정 리뷰 단건 조회
 	@Transactional(readOnly = true) // 읽기 전용 트랜잭션으로 설정합니다.
 	public ReviewResponseDto getReviewByContentIdAndReviewId(Long contentId, Long reviewId) {
-		// ... (기존 코드 유지)
+
 		contentRepository.findById(contentId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 콘텐츠입니다")
 		);
@@ -104,7 +104,7 @@ public class ReviewService {
 	// 리뷰 수정
 	@Transactional // 트랜잭션 단위로 동작하도록 설정합니다.
 	public ReviewResponseDto updateReview(Long memberId, Long contentId, Long reviewId, ReviewRequestDto requestDto) {
-		// ... (기존 코드 유지)
+
 		memberRepository.findById(memberId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 회원입니다")
 		);
@@ -130,7 +130,7 @@ public class ReviewService {
 	// 리뷰 삭제
 	@Transactional // 트랜잭션 단위로 동작하도록 설정합니다.
 	public void deleteReview(Long memberId, Long reviewId) {
-		// ... (기존 코드 유지)
+
 		memberRepository.findById(memberId).orElseThrow(
 			() -> new RuntimeException("존재하지 않는 회원입니다")
 		);
