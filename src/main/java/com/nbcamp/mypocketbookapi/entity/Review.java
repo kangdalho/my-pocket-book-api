@@ -44,5 +44,4 @@ public class Review extends BaseEntity {
         this.text = text;
     }
 
-
 }
