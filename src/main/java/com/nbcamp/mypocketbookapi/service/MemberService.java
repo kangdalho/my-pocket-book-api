@@ -43,7 +43,7 @@ public class MemberService {
 
     public LoginResponseDto login(@Valid LoginRequestDto requestDto) {
         Member member = memberJpaRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new MemberException(ErrorCode.SIGNUP_REQUIRED));
+                .orElseThrow(() -> new MemberException(ErrorCode.EMAIL_NOT_REGISTERED));
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new MemberException(ErrorCode.PASSWORD_MISMATCH);
         }

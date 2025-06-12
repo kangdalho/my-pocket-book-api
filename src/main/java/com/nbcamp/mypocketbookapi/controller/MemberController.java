@@ -11,7 +11,6 @@ import com.nbcamp.mypocketbookapi.dto.member.response.MessageResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
 import com.nbcamp.mypocketbookapi.service.MemberService;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -92,6 +91,13 @@ public class MemberController {
                 .ok(BaseResponse.success(ResponseCode.SUCCESS_FIND_ME, myInfo));
     }
 
+    @Operation(summary = "회원 로그아웃", description = "세션을 무효화하여 로그아웃을 진행합니다.",
+            security = {@SecurityRequirement(name = "sessionAuth")},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "로그아웃 성공,"),
+                    @ApiResponse(responseCode = "401", description = "인증 실패"),
+                    @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음")
+            })
     @PostMapping("/logout")
     public ResponseEntity<BaseResponse<MessageResponseDto>> logout(
             HttpServletRequest request
