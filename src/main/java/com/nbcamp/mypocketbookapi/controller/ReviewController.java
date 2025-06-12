@@ -1,7 +1,5 @@
 package com.nbcamp.mypocketbookapi.controller;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nbcamp.mypocketbookapi.common.BaseResponse;
 import com.nbcamp.mypocketbookapi.common.LoginMember;
+import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
 import com.nbcamp.mypocketbookapi.dto.review.ReviewResponseDto;
 import com.nbcamp.mypocketbookapi.service.ReviewService;
@@ -31,62 +31,74 @@ public class ReviewController {
 
 	// 리뷰 작성 엔드포인트
 	@PostMapping("/contents/{contentId}/reviews")
-	public ResponseEntity<ReviewResponseDto> createReview(
-		@LoginMember Long memberId, // @LoginMember 어노테이션으로 세션에서 로그인한 사용자 ID를 자동으로 주입받습니다.
+	public ResponseEntity<BaseResponse<ReviewResponseDto>> createReview( // 반환 타입 변경
+		@LoginMember Long memberId,
 		@PathVariable Long contentId,
 		@RequestBody ReviewRequestDto reviewRequestDto
 	) {
-		return ResponseEntity.ok(reviewService.createReview(memberId, contentId, reviewRequestDto));
+		ReviewResponseDto responseDto = reviewService.createReview(memberId, contentId, reviewRequestDto);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_REVIEW_REGISTERED.getHttpStatus())
+			.body(BaseResponse.success(ResponseCode.SUCCESS_REVIEW_REGISTERED, responseDto)); // 공통 응답 적용
 	}
 
 	// ISBN 기준으로 모든 리뷰 조회 (페이징 기능 추가)
-	// 모든 사용자가 해당 ISBN을 가진 책에 등록한 리뷰를 페이징 처리하여 조회합니다.
 	@GetMapping("/books/{isbn}/reviews")
-	public ResponseEntity<Page<ReviewResponseDto>> getReviewByIsbn(
+	public ResponseEntity<BaseResponse<Page<ReviewResponseDto>>> getReviewByIsbn( // 반환 타입 변경
 		@PathVariable String isbn,
-		// size는 한 페이지당 항목 수 (10개), sort는 정렬 기준 필드 (createdAt)
 		Pageable pageable
 	) {
-		return ResponseEntity.ok(reviewService.getReviewsByIsbn(isbn, pageable));
+		Page<ReviewResponseDto> reviewsPage = reviewService.getReviewsByIsbn(isbn, pageable);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_OK.getHttpStatus()) // 200 OK
+			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, reviewsPage)); // 공통 응답 적용
 	}
 
 	// 전체 리뷰 조회 (페이징 기능 추가)
 	@GetMapping("/reviews")
-	public ResponseEntity<Page<ReviewResponseDto>> getAllReviews(
-		// @PageableDefault를 사용하여 페이징 기본값을 설정합니다.
-		// size는 한 페이지당 항목 수 (10개), sort는 정렬 기준 필드 (createdAt),
-		// direction은 정렬 방향 (내림차순, 즉 최신순)
+	public ResponseEntity<BaseResponse<Page<ReviewResponseDto>>> getAllReviews( // 반환 타입 변경
 		@PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable
 	) {
-		return ResponseEntity.ok(reviewService.getAllReviews(pageable));
+		Page<ReviewResponseDto> reviewsPage = reviewService.getAllReviews(pageable);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_OK.getHttpStatus()) // 200 OK
+			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, reviewsPage)); // 공통 응답 적용
 	}
 
 	// 특정 콘텐츠의 특정 리뷰 단건 조회 엔드포인트
 	@GetMapping("/contents/{contentId}/reviews/{reviewId}")
-	public ResponseEntity<ReviewResponseDto> getReviewByContentIdAndReviewId(
+	public ResponseEntity<BaseResponse<ReviewResponseDto>> getReviewByContentIdAndReviewId( // 반환 타입 변경
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId
 	) {
-		return ResponseEntity.ok(reviewService.getReviewByContentIdAndReviewId(contentId, reviewId));
+		ReviewResponseDto responseDto = reviewService.getReviewByContentIdAndReviewId(contentId, reviewId);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_OK.getHttpStatus()) // 200 OK
+			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, responseDto)); // 공통 응답 적용
 	}
 
 	// 리뷰 수정 엔드포인트
 	@PutMapping("/contents/{contentId}/reviews/{reviewId}")
-	public ResponseEntity<ReviewResponseDto> updateReview(
+	public ResponseEntity<BaseResponse<ReviewResponseDto>> updateReview( // 반환 타입 변경
 		@LoginMember Long memberId,
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId,
 		@RequestBody ReviewRequestDto reviewRequestDto
 	) {
-		return ResponseEntity.ok(reviewService.updateReview(memberId, contentId, reviewId, reviewRequestDto));
+		ReviewResponseDto responseDto = reviewService.updateReview(memberId, contentId, reviewId, reviewRequestDto);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_OK.getHttpStatus()) // 200 OK
+			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, responseDto)); // 공통 응답 적용
 	}
 
 	// 리뷰 삭제 엔드포인트
 	@DeleteMapping("/reviews/{reviewId}")
-	public ResponseEntity<Void> deleteReview(
+	public ResponseEntity<BaseResponse<Void>> deleteReview( // 반환 타입 변경
 		@LoginMember Long memberId,
 		@PathVariable Long reviewId) {
 		reviewService.deleteReview(memberId, reviewId);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_NO_CONTENT.getHttpStatus()) // 204 No Content
+			.body(BaseResponse.success(ResponseCode.SUCCESS_NO_CONTENT)); // 공통 응답 적용 (데이터 없음)
 	}
 }
