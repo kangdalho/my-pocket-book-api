@@ -22,6 +22,8 @@ public enum ErrorCode implements BaseCode {
     DUPLICATE_CONTENT(DomainType.CONTENT, HttpStatus.CONFLICT, "이미 등록된 도서입니다."),
     SIGNUP_REQUIRED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "회원가입이 필요합니다."),
     REVIEW_LIKE_NOT_FOUND(DomainType.REVIEW_LIKE, HttpStatus.NOT_FOUND, "리뷰 좋아요가 존재하지 않습니다."),
+    KAKAO_API_BAD_REQUEST(DomainType.CONTENT, HttpStatus.BAD_REQUEST, "BAD_REQUEST"),
+    KAKAO_API_INTERNAL_SERVER_ERROR(DomainType.CONTENT, HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR"),
 
     // Review
     REVIEW_NOT_FOUND(DomainType.REVIEW, HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."),
