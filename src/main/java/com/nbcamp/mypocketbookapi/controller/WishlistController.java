@@ -1,5 +1,6 @@
 package com.nbcamp.mypocketbookapi.controller;
 
+import com.nbcamp.mypocketbookapi.common.LoginMember;
 import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Wishlist;
 import com.nbcamp.mypocketbookapi.service.WishlistService;
@@ -18,19 +19,18 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     @PostMapping("/api/contents/{contentId}/wishlists")
-    public ResponseEntity<WishlistResponseDto> saveWishlist (@PathVariable Long contentId,
+    public ResponseEntity<WishlistResponseDto> saveWishlist (@LoginMember Long memberId,
+                                                             @PathVariable Long contentId,
                                                              @RequestParam String isbn){
 
-        Long memberId = 1L;
         WishlistResponseDto wishlistResponseDto = wishlistService.saveWishlist(contentId, memberId, isbn);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(wishlistResponseDto);
     }
 
     @GetMapping("/api/wishlists")
-    public ResponseEntity<List<WishlistResponseDto>> listAll(){
+    public ResponseEntity<List<WishlistResponseDto>> listAll(@LoginMember Long memberId){
 
-        Long memberId = 1L;
         List<WishlistResponseDto> wishlists = wishlistService.getWishlist(memberId);
 
         return ResponseEntity.ok(wishlists);
