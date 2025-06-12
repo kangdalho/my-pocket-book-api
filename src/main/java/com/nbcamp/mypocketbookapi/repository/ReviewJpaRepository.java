@@ -1,7 +1,6 @@
 package com.nbcamp.mypocketbookapi.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.nbcamp.mypocketbookapi.entity.Review;
 import org.springframework.data.domain.Page;
