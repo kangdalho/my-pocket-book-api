@@ -21,6 +21,7 @@ public class ReviewResponseDto {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
+	// Review 엔티티로부터 DTO 생성
 	public ReviewResponseDto(Review review) {
 		this.id = review.getId();
 		this.nickname = review.getMember().getNickname(); // 변경: review.getMember().getId() -> review.getMember().getNickname()
