@@ -24,7 +24,7 @@ public enum ResponseCode implements BaseCode {
     SUCCESS_BOOK_REGISTERED(DomainType.CONTENT, HttpStatus.CREATED, ""),
 
     // Review
-    SUCCESS_REVIEW_REGISTERED(DomainType.REVIEW, HttpStatus.CREATED, ""),
+    SUCCESS_REVIEW_REGISTERED(DomainType.REVIEW, HttpStatus.CREATED, "리뷰가 성공적으로 작성되었습니다."),
 
     // Comment
     SUCCESS_COMMENT_REGISTERED(DomainType.COMMENT, HttpStatus.CREATED, ""),
