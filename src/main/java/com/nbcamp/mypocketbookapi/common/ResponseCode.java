@@ -30,7 +30,11 @@ public enum ResponseCode implements BaseCode {
     SUCCESS_COMMENT_REGISTERED(DomainType.COMMENT, HttpStatus.CREATED, ""),
 
     // ReviewLike
-    SUCCESS_REVIEW_LIKE_REGISTERED(DomainType.REVIEW_LIKE, HttpStatus.CREATED, ""),
+    SUCCESS_REVIEW_LIKE_REGISTERED(DomainType.REVIEW_LIKE, HttpStatus.CREATED, "리뷰에 좋아요를 눌렀습니다."),
+    SUCCESS_REVIEW_LIKE_REMOVED(DomainType.REVIEW_LIKE, HttpStatus.OK, "리뷰 좋아요를 취소하였습니다."),
+
+
+
 
     // Wishlist
     SUCCESS_WISHLIST_REGISTERED(DomainType.WISHLIST, HttpStatus.CREATED, "")
