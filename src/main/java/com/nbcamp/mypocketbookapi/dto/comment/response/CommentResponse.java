@@ -9,15 +9,15 @@ public class CommentResponse {
 
     private Long id;
     private String text;
-    private Long memberId;
+    private String nickname;
     private Long reviewId;
 
     @Builder
-    public CommentResponse(Long id, String text, Long memberId, Long reviewId) {
+    public CommentResponse(Long id, String text, String nickname, Long reviewId) {
 
         this.id = id;
         this.text = text;
-        this.memberId = memberId;
+        this.nickname = nickname;
         this.reviewId = reviewId;
     }
 
@@ -25,7 +25,7 @@ public class CommentResponse {
         return CommentResponse.builder()
                 .id(comment.getId())
                 .text(comment.getText())
-                .memberId(comment.getMember().getId())
+                .nickname(comment.getMember().getNickname())
                 .reviewId(comment.getReview().getId())
                 .build();
     }

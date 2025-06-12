@@ -25,11 +25,12 @@ public enum ErrorCode implements BaseCode {
     // Review
     REVIEW_NOT_FOUND(DomainType.REVIEW, HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."),
     UNAUTHORIZED_REVIEW_MODIFICATION(DomainType.REVIEW, HttpStatus.FORBIDDEN, "리뷰는 작성자만 수정할 수 있습니다."),
-    UNAUTHORIZED_REVIEW_DELETION(DomainType.REVIEW, HttpStatus.FORBIDDEN, "리뷰는 작성자만 삭제할 수 있습니다.");
+    UNAUTHORIZED_REVIEW_DELETION(DomainType.REVIEW, HttpStatus.FORBIDDEN, "리뷰는 작성자만 삭제할 수 있습니다."),
 
 
     // Comment
-
+    UNAUTHORIZED_COMMENT_MODIFICATION(DomainType.COMMENT, HttpStatus.FORBIDDEN, "댓글은 작성자만 수정할 수 있습니다."),
+    UNAUTHORIZED_COMMENT_DELETION(DomainType.COMMENT, HttpStatus.FORBIDDEN, "댓글은 작성자만 삭제할 수 있습니다.");
 
 
     // ReviewLike

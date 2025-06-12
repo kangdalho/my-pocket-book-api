@@ -1,5 +1,8 @@
 package com.nbcamp.mypocketbookapi.controller;
 
+import com.nbcamp.mypocketbookapi.common.BaseResponse;
+import com.nbcamp.mypocketbookapi.common.LoginMember;
+import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.comment.request.CommentRequest;
 import com.nbcamp.mypocketbookapi.dto.comment.response.CommentResponse;
 import com.nbcamp.mypocketbookapi.entity.Comment;
@@ -13,38 +16,37 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comments")
+@RequestMapping("/api")
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/api/reviews/{reviewId}/comments")
-    public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest request) {
-        Comment comment = commentService.createComment(request);
+    @PostMapping("/reviews/{reviewId}/comments")
+    public ResponseEntity<BaseResponse<CommentResponse>> createComment(@PathVariable Long reviewId, @LoginMember Long memberId, @RequestBody CommentRequest request) {
+        Comment comment = commentService.createComment(reviewId, memberId, request);
         CommentResponse response = CommentResponse.fromEntity(comment);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(ResponseCode.SUCCESS_CREATED, response));
     }
 
-    @GetMapping
-    public ResponseEntity<List<CommentResponse>> getCommentsByReviewId(@PathVariable Long reviewId) {
+    @GetMapping("/reviews/{reviewId}/comments")
+    public ResponseEntity<BaseResponse<List<CommentResponse>>> getCommentsByReviewId(@PathVariable Long reviewId) {
         List<CommentResponse> responses = commentService.getCommentsByReviewId(reviewId);
-        return ResponseEntity.ok(responses);
+        return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_OK, responses));
     }
 
-        @PutMapping("/api/comments/{commentid}")
-        public ResponseEntity<Void> updateComment (
-                @PathVariable("commentid") Long id,
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity<BaseResponse<Void>> updateComment (
+                @PathVariable Long commentId,
+                @LoginMember Long memberId,
                 @RequestBody CommentRequest dto
     ){
-            commentService.updateComment(id, dto.getText());
-            return ResponseEntity.ok().build();
+            commentService.updateComment(commentId,memberId, dto.getText());
+            return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_OK));
         }
 
-        @DeleteMapping("/api/comments/{commentid}")
-        public ResponseEntity<Void> deleteComment (@PathVariable Long id){
-            commentService.deleteComment(id);
-            return ResponseEntity.noContent().build();
-        }
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<BaseResponse<Void>> deleteComment (@PathVariable Long commentId, @LoginMember Long memberId){
+        commentService.deleteComment(commentId, memberId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(BaseResponse.success(ResponseCode.SUCCESS_OK));
     }
-
-
+}
