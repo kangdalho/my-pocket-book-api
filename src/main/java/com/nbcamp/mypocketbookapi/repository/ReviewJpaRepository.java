@@ -1,34 +1,36 @@
 package com.nbcamp.mypocketbookapi.repository;
 
-import java.util.List;
-
-import com.nbcamp.mypocketbookapi.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.nbcamp.mypocketbookapi.entity.Review;
 
 public interface ReviewJpaRepository extends JpaRepository<Review, Long> {
 
-	// 특정 콘텐츠의 모든 리뷰 조회
-	// SELECT r.* FROM review r WHERE r.content_id = ?
-	List<Review> findByContentId(Long contentId);
+	// N+1 문제 해결 : 특정 콘텐츠의 특정 리뷰 단건 조회 (상세 조회용)
+	// 리뷰, 회원, 콘텐츠 정보를 함께 Fetch하여 N+1 문제 방지
+	@Query("SELECT r FROM Review r JOIN FETCH r.member JOIN FETCH r.content WHERE r.content.id = :contentId AND r.id = :reviewId")
+	Review findByContentIdAndIdWithMemberAndContent(@Param("contentId") Long contentId, @Param("reviewId") Long reviewId);
 
-	// 특정 콘텐츠의 특정 리뷰 단건 조회
-	// SELECT r.* FROM review r WHERE r.content_id = ? AND r.id = ?
-	Review findByContentIdAndId(Long contentId, Long reviewId);
+	// N+1 문제 해결 : 리뷰 수정/삭제 시 권한 확인을 위해 리뷰와 회원 정보를 함께 Fetch
+	// 콘텐츠는 이 시점에 꼭 필요하지 않아 JOIN FETCH에서 제외
+	@Query("SELECT r FROM Review r JOIN FETCH r.member WHERE r.content.id = :contentId AND r.id = :reviewId")
+	Review findByContentIdAndIdWithMember(@Param("contentId") Long contentId, @Param("reviewId") Long reviewId);
 
-	// ISBN 기준으로 모든 리뷰 조회 (페이징 기능 및 N+1 문제 개선)
-	// Review, Member, Content 엔티티를 JOIN FETCH 하여 N+1 문제를 방지합니다.
-	// 또한, 주어진 ISBN에 해당하는 리뷰만 필터링하고 페이징을 적용합니다.
-	@Query(value = "SELECT r FROM Review r JOIN FETCH r.member JOIN FETCH r.content WHERE r.content.isbn = :isbn",
-		countQuery = "SELECT COUNT(r) FROM Review r JOIN r.content c WHERE c.isbn = :isbn")
-	Page<Review> findByContent_IsbnWithMemberAndContent(String isbn, Pageable pageable);
+	// N+1 문제 해결 : ISBN 기준으로 모든 리뷰 조회 (페이징 기능 및 Member, Content 정보 Fetch)
+	@Query(value = "SELECT r FROM Review r JOIN FETCH r.member JOIN FETCH r.content c WHERE c.isbn = :isbn",
+		countQuery = "SELECT COUNT(r.id) FROM Review r JOIN r.content c WHERE c.isbn = :isbn")
+	Page<Review> findByContent_IsbnWithMemberAndContent(@Param("isbn") String isbn, Pageable pageable);
 
-
-	// JPQL을 사용하여 Review, Member, Content를 함께 조회 (N+1 문제 해결)
-	// 페이징 처리된 모든 리뷰를 조회하며, Member와 Content 정보를 즉시 로딩하여 N+1 문제를 방지합니다.
+	// N+1 문제 해결 : 전체 리뷰 조회 (페이징 기능 및 Member, Content 정보 Fetch)
 	@Query(value = "SELECT r FROM Review r JOIN FETCH r.member JOIN FETCH r.content",
-		countQuery = "SELECT COUNT(r) FROM Review r") // 페이징을 위한 전체 개수 쿼리를 명시
+		countQuery = "SELECT COUNT(r.id) FROM Review r")
 	Page<Review> findAllWithMemberAndContent(Pageable pageable);
+
+	// N+1 문제 해결 : 리뷰 삭제 시 권한 확인을 위해 리뷰와 회원 정보를 함께 Fetch (리뷰 ID만으로 조회)
+	@Query("SELECT r FROM Review r JOIN FETCH r.member WHERE r.id = :reviewId")
+	Review findByIdWithMember(@Param("reviewId") Long reviewId);
 }
