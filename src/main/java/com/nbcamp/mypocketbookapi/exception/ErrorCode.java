@@ -16,10 +16,14 @@ public enum ErrorCode implements BaseCode {
     SIGNUP_REQUIRED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "회원가입이 필요합니다."),
     UNAUTHORIZED(DomainType.AUTH, HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
 
+
     // Review
     REVIEW_NOT_FOUND(DomainType.REVIEW, HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."),
     UNAUTHORIZED_REVIEW_MODIFICATION(DomainType.REVIEW, HttpStatus.FORBIDDEN, "리뷰는 작성자만 수정할 수 있습니다."),
     UNAUTHORIZED_REVIEW_DELETION(DomainType.REVIEW, HttpStatus.FORBIDDEN, "리뷰는 작성자만 삭제할 수 있습니다."),;
+    // member
+    EMAIL_NOT_REGISTERED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "등록되지 않은 이메일입니다. 회원가입 후 로그인해주세요.");
+
 
     private final DomainType domainType;
     private final HttpStatus httpStatus;
