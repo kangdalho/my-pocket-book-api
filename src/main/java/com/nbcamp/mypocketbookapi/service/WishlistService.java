@@ -10,6 +10,8 @@ import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.WishlistJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,15 +43,14 @@ public class WishlistService {
                 .build();
     }
 
-    public List<WishlistResponseDto> getWishlist(Long memberId) {
+    public Page<WishlistResponseDto> getWishlist(Long memberId, Pageable pageable) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new WishlistException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<Wishlist> wishlistList = wishlistRepository.findByMember(member);
+        Page<Wishlist> wishlistPage = wishlistRepository.findByMember(member, pageable);
 
-        return wishlistList.stream()
-                .map(wishlist -> WishlistResponseDto.builder()
+        return wishlistPage.map(wishlist -> WishlistResponseDto.builder()
                         .wishlistId(wishlist.getId())
                         .contentId(wishlist.getContent().getId())
                         .memberId(wishlist.getMember().getId())
@@ -61,8 +62,7 @@ public class WishlistService {
                         .salePrice(wishlist.getContent().getSalePrice())
                         .status(wishlist.getContent().getStatus())
                         .build()
-                )
-                .collect(Collectors.toList());
+                );
     }
 
     public void deleteByWish(Long id) {
