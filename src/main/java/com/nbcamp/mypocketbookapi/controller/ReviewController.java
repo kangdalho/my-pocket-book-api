@@ -1,92 +1,106 @@
 package com.nbcamp.mypocketbookapi.controller;
 
-import java.util.List;
+import com.nbcamp.mypocketbookapi.common.BaseResponse;
+import com.nbcamp.mypocketbookapi.common.LoginMember;
+import com.nbcamp.mypocketbookapi.common.ResponseCode;
+import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
+import com.nbcamp.mypocketbookapi.dto.review.ReviewResponseDto;
+import com.nbcamp.mypocketbookapi.service.ReviewService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.nbcamp.mypocketbookapi.common.LoginMember;
-import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
-import com.nbcamp.mypocketbookapi.dto.review.ReviewResponseDto;
-import com.nbcamp.mypocketbookapi.service.ReviewService;
-
-import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Tag(name = "리뷰 API", description = "리뷰 관련 API")
 public class ReviewController {
 
 	private final ReviewService reviewService;
 
-	// 리뷰 작성 엔드포인트
+	@Operation(summary = "리뷰 작성", description = "로그인한 사용자가 특정 콘텐츠에 리뷰를 작성합니다.")
 	@PostMapping("/contents/{contentId}/reviews")
-	public ResponseEntity<ReviewResponseDto> createReview(
-		@LoginMember Long memberId, // @LoginMember 어노테이션으로 세션에서 로그인한 사용자 ID를 자동으로 주입받습니다.
+	public ResponseEntity<BaseResponse<ReviewResponseDto>> createReview(
+		@LoginMember Long memberId,
 		@PathVariable Long contentId,
-		@RequestBody ReviewRequestDto reviewRequestDto
+		@RequestBody @Valid ReviewRequestDto reviewRequestDto
 	) {
-		return ResponseEntity.ok(reviewService.createReview(memberId, contentId, reviewRequestDto));
+		ReviewResponseDto responseDto = reviewService.createReview(memberId, contentId, reviewRequestDto);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_REVIEW_REGISTERED.getHttpStatus())
+			.body(BaseResponse.success(ResponseCode.SUCCESS_REVIEW_REGISTERED, responseDto));
 	}
 
-	// ISBN 기준으로 모든 리뷰 조회 (페이징 기능 추가)
-	// 모든 사용자가 해당 ISBN을 가진 책에 등록한 리뷰를 페이징 처리하여 조회합니다.
+	@Operation(summary = "ISBN 기준 리뷰 조회", description = "도서 ISBN을 기준으로 리뷰 목록을 조회합니다. 페이징 포함.")
 	@GetMapping("/books/{isbn}/reviews")
-	public ResponseEntity<Page<ReviewResponseDto>> getReviewByIsbn(
+	public ResponseEntity<BaseResponse<Page<ReviewResponseDto>>> getReviewByIsbn(
 		@PathVariable String isbn,
-		// size는 한 페이지당 항목 수 (10개), sort는 정렬 기준 필드 (createdAt)
 		Pageable pageable
 	) {
-		return ResponseEntity.ok(reviewService.getReviewsByIsbn(isbn, pageable));
+		Page<ReviewResponseDto> reviewsPage = reviewService.getReviewsByIsbn(isbn, pageable);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_OK.getHttpStatus())
+			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, reviewsPage));
 	}
 
-	// 전체 리뷰 조회 (페이징 기능 추가)
+	@Operation(summary = "전체 리뷰 조회", description = "등록된 전체 리뷰를 조회합니다. 최신순 정렬, 페이징 지원.")
 	@GetMapping("/reviews")
-	public ResponseEntity<Page<ReviewResponseDto>> getAllReviews(
-		// @PageableDefault를 사용하여 페이징 기본값을 설정합니다.
-		// size는 한 페이지당 항목 수 (10개), sort는 정렬 기준 필드 (createdAt),
-		// direction은 정렬 방향 (내림차순, 즉 최신순)
-		@PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable
+	public ResponseEntity<BaseResponse<Page<ReviewResponseDto>>> getAllReviews(
+		@PageableDefault(size = 10, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC)
+		Pageable pageable
 	) {
-		return ResponseEntity.ok(reviewService.getAllReviews(pageable));
+		Page<ReviewResponseDto> reviewsPage = reviewService.getAllReviews(pageable);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_OK.getHttpStatus())
+			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, reviewsPage));
 	}
 
-	// 특정 콘텐츠의 특정 리뷰 단건 조회 엔드포인트
+	@Operation(summary = "특정 리뷰 단건 조회", description = "특정 콘텐츠 내 특정 리뷰를 단건 조회합니다.")
 	@GetMapping("/contents/{contentId}/reviews/{reviewId}")
-	public ResponseEntity<ReviewResponseDto> getReviewByContentIdAndReviewId(
+	public ResponseEntity<BaseResponse<ReviewResponseDto>> getReviewByContentIdAndReviewId(
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId
 	) {
-		return ResponseEntity.ok(reviewService.getReviewByContentIdAndReviewId(contentId, reviewId));
+		ReviewResponseDto responseDto = reviewService.getReviewByContentIdAndReviewId(contentId, reviewId);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_OK.getHttpStatus())
+			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, responseDto));
 	}
 
-	// 리뷰 수정 엔드포인트
+	@Operation(summary = "리뷰 수정", description = "작성자가 자신의 리뷰를 수정합니다.")
 	@PutMapping("/contents/{contentId}/reviews/{reviewId}")
-	public ResponseEntity<ReviewResponseDto> updateReview(
+	public ResponseEntity<BaseResponse<ReviewResponseDto>> updateReview(
 		@LoginMember Long memberId,
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId,
-		@RequestBody ReviewRequestDto reviewRequestDto
+		@RequestBody @Valid ReviewRequestDto reviewRequestDto
 	) {
-		return ResponseEntity.ok(reviewService.updateReview(memberId, contentId, reviewId, reviewRequestDto));
+		ReviewResponseDto responseDto = reviewService.updateReview(memberId, contentId, reviewId, reviewRequestDto);
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_OK.getHttpStatus())
+			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, responseDto));
 	}
 
-	// 리뷰 삭제 엔드포인트
+	@Operation(summary = "리뷰 삭제", description = "작성자가 자신의 리뷰를 삭제합니다.")
 	@DeleteMapping("/reviews/{reviewId}")
-	public ResponseEntity<Void> deleteReview(
+	public ResponseEntity<BaseResponse<Void>> deleteReview(
 		@LoginMember Long memberId,
-		@PathVariable Long reviewId) {
+		@PathVariable Long reviewId
+	) {
 		reviewService.deleteReview(memberId, reviewId);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity
+			.status(ResponseCode.SUCCESS_NO_CONTENT.getHttpStatus())
+			.body(BaseResponse.success(ResponseCode.SUCCESS_NO_CONTENT));
 	}
 }

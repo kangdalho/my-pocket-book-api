@@ -21,16 +21,20 @@ public enum ResponseCode implements BaseCode {
     SUCCESS_LOGOUT(DomainType.MEMBER, HttpStatus.OK,"로그아웃 하였습니다."),
     SUCCESS_WITHDRAW(DomainType.MEMBER, HttpStatus.OK,"회원탈퇴 되었습니다."),
     // Content
-    SUCCESS_BOOK_REGISTERED(DomainType.CONTENT, HttpStatus.CREATED, ""),
+    SUCCESS_BOOK_DELETED(DomainType.CONTENT, HttpStatus.OK, "도서정보 삭제되었습니다"),
 
     // Review
-    SUCCESS_REVIEW_REGISTERED(DomainType.REVIEW, HttpStatus.CREATED, ""),
+    SUCCESS_REVIEW_REGISTERED(DomainType.REVIEW, HttpStatus.CREATED, "리뷰가 성공적으로 작성되었습니다."),
 
     // Comment
     SUCCESS_COMMENT_REGISTERED(DomainType.COMMENT, HttpStatus.CREATED, ""),
 
     // ReviewLike
-    SUCCESS_REVIEW_LIKE_REGISTERED(DomainType.REVIEW_LIKE, HttpStatus.CREATED, ""),
+    SUCCESS_REVIEW_LIKE_REGISTERED(DomainType.REVIEW_LIKE, HttpStatus.CREATED, "리뷰에 좋아요를 눌렀습니다."),
+    SUCCESS_REVIEW_LIKE_REMOVED(DomainType.REVIEW_LIKE, HttpStatus.OK, "리뷰 좋아요를 취소하였습니다."),
+
+
+
 
     // Wishlist
     SUCCESS_WISHLIST_DELETED(DomainType.WISHLIST, HttpStatus.NO_CONTENT, "위시리스트가 삭제되었습니다.")
