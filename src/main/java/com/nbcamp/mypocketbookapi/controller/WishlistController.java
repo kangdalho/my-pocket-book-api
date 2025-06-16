@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/api")
 public class WishlistController {
 
     private final WishlistService wishlistService;
 
-    @PostMapping("/api/contents/{contentId}/wishlists")
+    @PostMapping("/contents/{contentId}/wishlists")
     public ResponseEntity<BaseResponse<WishlistResponseDto>> saveWishlist(@LoginMember Long memberId,
                                                                           @PathVariable Long contentId,
                                                                           @RequestParam String isbn) {
@@ -30,7 +30,7 @@ public class WishlistController {
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(ResponseCode.SUCCESS_CREATED, wishlistResponseDto));
     }
 
-    @GetMapping("/api/wishlists")
+    @GetMapping("/wishlists")
     public ResponseEntity<BaseResponse<Page<WishlistResponseDto>>> listAll(@LoginMember Long memberId,
                                                                            @PageableDefault(size = 20, page = 0) Pageable pageable) {
 
@@ -39,7 +39,7 @@ public class WishlistController {
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_OK, wishlists));
     }
 
-    @DeleteMapping("/api/wishlists/{wishlistId}")
+    @DeleteMapping("/wishlists/{wishlistId}")
     public ResponseEntity<BaseResponse<Void>> deleteByWish(@PathVariable Long wishlistId) {
 
         wishlistService.deleteByWish(wishlistId);
