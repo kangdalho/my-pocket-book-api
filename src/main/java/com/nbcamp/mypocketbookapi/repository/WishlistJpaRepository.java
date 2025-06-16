@@ -10,5 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface WishlistJpaRepository extends JpaRepository<Wishlist, Long> {
 
     Page<Wishlist> findByMember(Member member, @ParameterObject Pageable pageable);
+    boolean existsByMemberAndIsbn(Member member, String isbn);
 
 }

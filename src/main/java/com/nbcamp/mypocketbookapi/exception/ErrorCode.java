@@ -14,7 +14,8 @@ public enum ErrorCode implements BaseCode {
     UNAUTHORIZED_CONTENT_DELETION(DomainType.CONTENT, HttpStatus.FORBIDDEN, "작성자만 삭제 할수있습니다."),
     DUPLICATE_CONTENT(DomainType.CONTENT, HttpStatus.CONFLICT, "이미 등록된 도서입니다."),
     SIGNUP_REQUIRED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "회원가입이 필요합니다."),
-    UNAUTHORIZED(DomainType.AUTH, HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+    UNAUTHORIZED(DomainType.AUTH, HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
+    WISHLIST_ALREADY_EXITS(DomainType.WISHLIST, HttpStatus.CONFLICT,"위시리스트에 존재하는 콘텐츠입니다.");
 
     private final DomainType domainType;
     private final HttpStatus httpStatus;

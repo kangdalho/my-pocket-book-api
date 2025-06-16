@@ -4,6 +4,7 @@ import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.entity.Wishlist;
+import com.nbcamp.mypocketbookapi.exception.BusinessException;
 import com.nbcamp.mypocketbookapi.exception.wishlist.WishlistException;
 import com.nbcamp.mypocketbookapi.exception.ErrorCode;
 import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
@@ -23,14 +24,18 @@ public class WishlistService {
     private final MemberJpaRepository memberRepository;
     private final WishlistJpaRepository wishlistRepository;
 
-    public WishlistResponseDto saveWishlist(Long contentId, Long memberId, String isbn) {
+    public WishlistResponseDto saveWishlist(Long contentId, Long memberId) {
 
         Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new WishlistException(ErrorCode.CONTENT_NOT_FOUND));
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new WishlistException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Wishlist wishlist = Wishlist.create(content, member, isbn);
+        if (wishlistRepository.existsByMemberAndIsbn(member,content.getIsbn())) {
+            throw new WishlistException(ErrorCode.WISHLIST_ALREADY_EXITS);
+        }
+
+        Wishlist wishlist = Wishlist.create(content, member, content.getIsbn());
         Wishlist saved = wishlistRepository.save(wishlist);
 
         return WishlistResponseDto.builder()

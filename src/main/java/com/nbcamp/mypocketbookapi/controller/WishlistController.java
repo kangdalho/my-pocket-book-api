@@ -15,25 +15,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class WishlistController {
 
     private final WishlistService wishlistService;
 
     @PostMapping("/contents/{contentId}/wishlists")
-    public ResponseEntity<BaseResponse<WishlistResponseDto>> saveWishlist(@LoginMember Long memberId,
-                                                                          @PathVariable Long contentId,
-                                                                          @RequestParam String isbn) {
+    public ResponseEntity<BaseResponse<WishlistResponseDto>> saveWishlist(@LoginMember Long memberId, @PathVariable Long contentId) {
 
-        WishlistResponseDto wishlistResponseDto = wishlistService.saveWishlist(contentId, memberId, isbn);
+        WishlistResponseDto wishlistResponseDto = wishlistService.saveWishlist(contentId, memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(ResponseCode.SUCCESS_CREATED, wishlistResponseDto));
     }
 
     @GetMapping("/wishlists")
-    public ResponseEntity<BaseResponse<Page<WishlistResponseDto>>> listAll(@LoginMember Long memberId,
-                                                                           @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable) {
+    public ResponseEntity<BaseResponse<Page<WishlistResponseDto>>> listAll(@LoginMember Long memberId, @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         Page<WishlistResponseDto> wishlists = wishlistService.getWishlist(memberId, pageable);
 
