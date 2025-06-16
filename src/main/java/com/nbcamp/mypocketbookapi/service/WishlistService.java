@@ -4,12 +4,14 @@ import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.entity.Wishlist;
-import com.nbcamp.mypocketbookapi.exception.BusinessException;
+import com.nbcamp.mypocketbookapi.exception.wishlist.WishlistException;
 import com.nbcamp.mypocketbookapi.exception.ErrorCode;
 import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.WishlistJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,10 +29,10 @@ public class WishlistService {
     public WishlistResponseDto saveWishlist(Long contentId, Long memberId, String isbn) {
 
         Content content = contentRepository.findById(contentId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.CONTENT_NOT_FOUND));
+                .orElseThrow(() -> new WishlistException(ErrorCode.CONTENT_NOT_FOUND));
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new WishlistException(ErrorCode.MEMBER_NOT_FOUND));
 
         Wishlist wishlist = Wishlist.create(content, member, isbn);
         Wishlist saved = wishlistRepository.save(wishlist);
@@ -41,15 +43,14 @@ public class WishlistService {
                 .build();
     }
 
-    public List<WishlistResponseDto> getWishlist(Long memberId) {
+    public Page<WishlistResponseDto> getWishlist(Long memberId, Pageable pageable) {
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new WishlistException(ErrorCode.MEMBER_NOT_FOUND));
 
-        List<Wishlist> wishlistList = wishlistRepository.findByMember(member);
+        Page<Wishlist> wishlistPage = wishlistRepository.findByMember(member, pageable);
 
-        return wishlistList.stream()
-                .map(wishlist -> WishlistResponseDto.builder()
+        return wishlistPage.map(wishlist -> WishlistResponseDto.builder()
                         .wishlistId(wishlist.getId())
                         .contentId(wishlist.getContent().getId())
                         .memberId(wishlist.getMember().getId())
@@ -61,14 +62,13 @@ public class WishlistService {
                         .salePrice(wishlist.getContent().getSalePrice())
                         .status(wishlist.getContent().getStatus())
                         .build()
-                )
-                .collect(Collectors.toList());
+                );
     }
 
     public void deleteByWish(Long id) {
 
         Wishlist wishlist = wishlistRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.CONTENT_NOT_FOUND));
+                .orElseThrow(() -> new WishlistException(ErrorCode.CONTENT_NOT_FOUND));
 
         wishlistRepository.delete(wishlist);
     }

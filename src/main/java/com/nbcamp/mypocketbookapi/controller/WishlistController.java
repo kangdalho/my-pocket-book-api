@@ -1,14 +1,17 @@
 package com.nbcamp.mypocketbookapi.controller;
 
+import com.nbcamp.mypocketbookapi.common.BaseResponse;
+import com.nbcamp.mypocketbookapi.common.LoginMember;
+import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
-import com.nbcamp.mypocketbookapi.entity.Wishlist;
 import com.nbcamp.mypocketbookapi.service.WishlistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,29 +21,29 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
     @PostMapping("/api/contents/{contentId}/wishlists")
-    public ResponseEntity<WishlistResponseDto> saveWishlist (@PathVariable Long contentId,
-                                                             @RequestParam String isbn){
+    public ResponseEntity<BaseResponse<WishlistResponseDto>> saveWishlist(@LoginMember Long memberId,
+                                                                          @PathVariable Long contentId,
+                                                                          @RequestParam String isbn) {
 
-        Long memberId = 1L;
         WishlistResponseDto wishlistResponseDto = wishlistService.saveWishlist(contentId, memberId, isbn);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(wishlistResponseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(ResponseCode.SUCCESS_CREATED, wishlistResponseDto));
     }
 
     @GetMapping("/api/wishlists")
-    public ResponseEntity<List<WishlistResponseDto>> listAll(){
+    public ResponseEntity<BaseResponse<Page<WishlistResponseDto>>> listAll(@LoginMember Long memberId,
+                                                                           @PageableDefault(size = 20, page = 0) Pageable pageable) {
 
-        Long memberId = 1L;
-        List<WishlistResponseDto> wishlists = wishlistService.getWishlist(memberId);
+        Page<WishlistResponseDto> wishlists = wishlistService.getWishlist(memberId, pageable);
 
-        return ResponseEntity.ok(wishlists);
+        return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_OK, wishlists));
     }
 
     @DeleteMapping("/api/wishlists/{wishlistId}")
-    public ResponseEntity<String> deleteByWish(@PathVariable Long wishlistId) {
+    public ResponseEntity<BaseResponse<Void>> deleteByWish(@PathVariable Long wishlistId) {
 
         wishlistService.deleteByWish(wishlistId);
 
-        return ResponseEntity.ok("콘텐츠가 등록된 위시리스트에서 삭제되었습니다.");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(BaseResponse.success(ResponseCode.SUCCESS_WISHLIST_DELETED));
     }
 }
