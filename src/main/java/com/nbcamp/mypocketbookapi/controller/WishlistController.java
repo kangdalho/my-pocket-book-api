@@ -6,6 +6,7 @@ import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
 import com.nbcamp.mypocketbookapi.service.WishlistService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,7 +33,7 @@ public class WishlistController {
 
     @GetMapping("/wishlists")
     public ResponseEntity<BaseResponse<Page<WishlistResponseDto>>> listAll(@LoginMember Long memberId,
-                                                                           @PageableDefault(size = 20, page = 0) Pageable pageable) {
+                                                                           @ParameterObject @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
         Page<WishlistResponseDto> wishlists = wishlistService.getWishlist(memberId, pageable);
 

@@ -10,13 +10,10 @@ import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.WishlistJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +27,6 @@ public class WishlistService {
 
         Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new WishlistException(ErrorCode.CONTENT_NOT_FOUND));
-
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new WishlistException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -43,7 +39,7 @@ public class WishlistService {
                 .build();
     }
 
-    public Page<WishlistResponseDto> getWishlist(Long memberId, Pageable pageable) {
+    public Page<WishlistResponseDto> getWishlist(Long memberId, @ParameterObject Pageable pageable) {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new WishlistException(ErrorCode.MEMBER_NOT_FOUND));
