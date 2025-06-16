@@ -4,9 +4,8 @@ import com.nbcamp.mypocketbookapi.dto.wishlist.WishlistResponseDto;
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
 import com.nbcamp.mypocketbookapi.entity.Wishlist;
-import com.nbcamp.mypocketbookapi.exception.BusinessException;
-import com.nbcamp.mypocketbookapi.exception.wishlist.WishlistException;
 import com.nbcamp.mypocketbookapi.exception.ErrorCode;
+import com.nbcamp.mypocketbookapi.exception.wishlist.WishlistException;
 import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.WishlistJpaRepository;
@@ -31,7 +30,7 @@ public class WishlistService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new WishlistException(ErrorCode.MEMBER_NOT_FOUND));
 
-        if (wishlistRepository.existsByMemberAndIsbn(member,content.getIsbn())) {
+        if (wishlistRepository.existsByMemberAndIsbn(member, content.getIsbn())) {
             throw new WishlistException(ErrorCode.WISHLIST_ALREADY_EXITS);
         }
 
@@ -52,18 +51,18 @@ public class WishlistService {
         Page<Wishlist> wishlistPage = wishlistRepository.findByMember(member, pageable);
 
         return wishlistPage.map(wishlist -> WishlistResponseDto.builder()
-                        .wishlistId(wishlist.getId())
-                        .contentId(wishlist.getContent().getId())
-                        .memberId(wishlist.getMember().getId())
-                        .isbn(wishlist.getIsbn())
-                        .title(wishlist.getContent().getTitle())
-                        .thumbnail(wishlist.getContent().getThumbnail())
-                        .bookLink(wishlist.getContent().getBookLink())
-                        .summary(wishlist.getContent().getSummary())
-                        .salePrice(wishlist.getContent().getSalePrice())
-                        .status(wishlist.getContent().getStatus())
-                        .build()
-                );
+                .wishlistId(wishlist.getId())
+                .contentId(wishlist.getContent().getId())
+                .memberId(wishlist.getMember().getId())
+                .isbn(wishlist.getIsbn())
+                .title(wishlist.getContent().getTitle())
+                .thumbnail(wishlist.getContent().getThumbnail())
+                .bookLink(wishlist.getContent().getBookLink())
+                .summary(wishlist.getContent().getSummary())
+                .salePrice(wishlist.getContent().getSalePrice())
+                .status(wishlist.getContent().getStatus())
+                .build()
+        );
     }
 
     public void deleteByWish(Long id) {
