@@ -1,6 +1,8 @@
 package com.nbcamp.mypocketbookapi.dto.content;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
@@ -19,7 +21,7 @@ public class ContentCreateRequestDto {
     private String bookLink;
     @NotBlank(message = "필수 입력값입니다.")
     private String summary;
-    @NotBlank(message = "필수 입력값입니다.")
+    @PositiveOrZero(message = "0보다 크거나 같아야함.")
     private Integer salePrice;
     @NotBlank(message = "필수 입력값입니다.")
     @Size(max = 10, message = "status는 10자 이하여야 합니다")
