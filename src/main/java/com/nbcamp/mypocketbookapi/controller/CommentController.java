@@ -8,11 +8,14 @@ import com.nbcamp.mypocketbookapi.dto.comment.response.CommentResponse;
 import com.nbcamp.mypocketbookapi.entity.Comment;
 import com.nbcamp.mypocketbookapi.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,8 +32,13 @@ public class CommentController {
     }
 
     @GetMapping("/reviews/{reviewId}/comments")
-    public ResponseEntity<BaseResponse<List<CommentResponse>>> getCommentsByReviewId(@PathVariable Long reviewId) {
-        List<CommentResponse> responses = commentService.getCommentsByReviewId(reviewId);
+    public ResponseEntity<BaseResponse<Page<CommentResponse>>> getCommentsByReviewId(
+            @PathVariable Long reviewId,
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<CommentResponse> responses = commentService.getCommentsByReviewId(reviewId, pageable);
+
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_OK, responses));
     }
 
