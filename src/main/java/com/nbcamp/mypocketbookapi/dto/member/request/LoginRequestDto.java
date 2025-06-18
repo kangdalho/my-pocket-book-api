@@ -18,4 +18,5 @@ public class LoginRequestDto {
     @Size(min = 8, message = "비밀번호는 8자 이상이어야 합니다.")
     @NotBlank(message = "비밀번호는 필수입력사항입니다.")
     private final String password;
+
 }

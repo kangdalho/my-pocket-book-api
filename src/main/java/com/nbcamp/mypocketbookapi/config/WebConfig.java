@@ -1,6 +1,6 @@
 package com.nbcamp.mypocketbookapi.config;
 
-import com.nbcamp.mypocketbookapi.interceptor.SessionAuthenticationInterceptor;
+import com.nbcamp.mypocketbookapi.interceptor.AuthenticationInterceptor;
 import com.nbcamp.mypocketbookapi.resolver.LoginMemberArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +13,13 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
-    private final SessionAuthenticationInterceptor sessionAuthenticationInterceptor;
+    private final AuthenticationInterceptor authenticationInterceptor;
     private final LoginMemberArgumentResolver loginMemberArgumentResolver;
 
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(sessionAuthenticationInterceptor)
+        registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns(
                         "/api/**"
                 )
