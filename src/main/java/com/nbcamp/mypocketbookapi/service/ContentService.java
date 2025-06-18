@@ -11,6 +11,8 @@ import com.nbcamp.mypocketbookapi.exception.content.ContentException;
 import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -89,17 +91,16 @@ public class ContentService {
 
     // id 기준 등록한 도서 전체 조회
     @Transactional(readOnly = true)
-    public List<ContentResponseDto> findAllContents(Long memberId) {
+    public Page<ContentResponseDto> findAllContents(Long memberId, Pageable pageable) {
 
         // 해당 id 회원 조회 없으면 예외발생
         Member member = memberJpaRepository.findById(memberId)
                 .orElseThrow(()-> new ContentException(ErrorCode.MEMBER_NOT_FOUND));
 
         // 해당 회원이 등록한 모든 콘텐츠 조회
-        List<Content> contentList = contentJpaRepository.findByMember(member);
+        Page<Content> contentPage = contentJpaRepository.findByMember(member, pageable);
 
-        return contentList.stream()
-                .map(content -> new ContentResponseDto(content.getId(),
+        return contentPage.map(content -> new ContentResponseDto(content.getId(),
                         content.getIsbn(),
                         content.getTitle(),
                         content.getThumbnail(),
@@ -107,8 +108,8 @@ public class ContentService {
                         content.getSummary(),
                         content.getSalePrice(),
                         content.getStatus(),
-                        content.getCreatedAt()))
-                .collect(Collectors.toList());
+                        content.getCreatedAt()
+        ));
     }
 
     // 단건 조회

@@ -37,7 +37,7 @@ public enum ResponseCode implements BaseCode {
 
 
     // Wishlist
-    SUCCESS_WISHLIST_REGISTERED(DomainType.WISHLIST, HttpStatus.CREATED, "")
+    SUCCESS_WISHLIST_DELETED(DomainType.WISHLIST, HttpStatus.NO_CONTENT, "위시리스트가 삭제되었습니다.")
 
     ;
 

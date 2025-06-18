@@ -7,7 +7,7 @@ import com.nbcamp.mypocketbookapi.exception.content.ContentException;
 import com.nbcamp.mypocketbookapi.exception.member.MemberException;
 import com.nbcamp.mypocketbookapi.exception.review.ReviewException;
 import com.nbcamp.mypocketbookapi.exception.reviewlike.ReviewLikeException;
-import com.nbcamp.mypocketbookapi.exception.wishlist.WishListException;
+import com.nbcamp.mypocketbookapi.exception.wishlist.WishlistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -64,8 +64,8 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.fail(errorCode));
     }
 
-    @ExceptionHandler(WishListException.class)
-    public ResponseEntity<BaseResponse<?>> handleWishListException(WishListException ex) {
+    @ExceptionHandler(WishlistException.class)
+    public ResponseEntity<BaseResponse<?>> handleWishListException(WishlistException ex) {
         ErrorCode errorCode = ex.getErrorCode();
         log.warn("[{}] {} - {}", DomainType.WISHLIST, errorCode.getHttpStatus().value(), errorCode.getMessage());
         return ResponseEntity

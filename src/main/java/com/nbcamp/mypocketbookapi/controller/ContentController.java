@@ -10,6 +10,11 @@ import com.nbcamp.mypocketbookapi.service.ContentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,10 +48,11 @@ public class ContentController {
 
     // 회원이 등록한 도서 전체 조회
     @GetMapping("/api/contents")
-    // List<ContentResponseDto>는 콘텐츠 목록을 DTO 형태로 담은 리스트
-    public ResponseEntity<BaseResponse<List<ContentResponseDto>>> findAllContents(@LoginMember Long memberId) {
+    // List를 page로 변경 <ContentResponseDto>는 콘텐츠 목록을 DTO 형태로 담은 리스트
+    public ResponseEntity<BaseResponse<Page<ContentResponseDto>>> findAllContents(
+            @LoginMember Long memberId, @ParameterObject @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         // 서비스에 회원 id를 기준으로 컨텐츠 목록 요청
-        List<ContentResponseDto> contents = contentService.findAllContents(memberId);
+        Page<ContentResponseDto> contents = contentService.findAllContents(memberId, pageable);
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_OK, contents));
     }
 
@@ -63,4 +69,6 @@ public class ContentController {
         contentService.deleteContent(memberId, contentId);
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_BOOK_DELETED));
     }
+
+    // 검색
 }
