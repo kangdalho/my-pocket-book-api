@@ -10,6 +10,7 @@ import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MessageResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
+import com.nbcamp.mypocketbookapi.security.JwtUtil;
 import com.nbcamp.mypocketbookapi.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtUtil jwtUtil;
 
     @Operation(summary = "회원 생성", description = "새로운 회원을 등록합니다.",
             responses = {
@@ -41,40 +44,32 @@ public class MemberController {
             })
     @PostMapping("/signup")
     public ResponseEntity<BaseResponse<MemberResponseDto>> signup(
-            @Valid
-            @RequestBody SignupRequestDto requestDto
+            @Valid @RequestBody SignupRequestDto requestDto
     ) {
         MemberResponseDto signup = memberService.signup(requestDto);
-        return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_SIGNUP, signup));
+        return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_SIGNUP, signup));
     }
 
-    @Operation(summary = "회원 로그인", description = "아이디와 비밀번호를 사용하여 로그인하고 세션을 생성합니다.",
+    @Operation(summary = "회원 로그인", description = "아이디와 비밀번호를 사용하여 로그인하고 JWT 토큰을 발급합니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "로그인 성공, 세션 생성"),
                     @ApiResponse(responseCode = "401", description = "로그인 실패 (잘못된 아이디 또는 비밀번호)")
             })
     @PostMapping("/login")
     public ResponseEntity<BaseResponse<LoginResponseDto>> login(
-            @Valid
-            @RequestBody LoginRequestDto requestDto,
-            HttpServletRequest request
+            @Valid @RequestBody LoginRequestDto requestDto,
+            HttpServletResponse httpServletResponse
     ) {
-        LoginResponseDto login = memberService.login(requestDto); // 로그인 검증 + 사용자 정보 반환
-        /*
-        Session의 디폴트 값은 true
-        Session이 request에 존재하면 기존 Session 반환, 없으면 새로 생성하여 반환
-         */
-        HttpSession session = request.getSession(); // 세션 생성 or 반환
-        //사용자 ID만 세션에 저장 (보안/용량 측면에서 효율적)
-        Long id = login.getId();
-        session.setAttribute(Const.LOGIN_USER, id);
-        return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_LOGIN, login));
+        LoginResponseDto response = memberService.login(requestDto); // 로그인 검증 + 사용자 정보 반환
+        String createToken = jwtUtil.createToken(response.getNickname(), response.getId());
+
+        httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
+
+        return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_LOGIN, response));
     }
 
-    @Operation(summary = "회원 정보 조회", description = "세션 ID를 기반으로 특정 회원의 상세 정보를 조회합니다.",
-            security = {@SecurityRequirement(name = "sessionAuth")},
+    @Operation(summary = "회원 정보 조회", description = "JWT 토큰을 기반으로 인증된 회원 정보를 조회합니다.",
+            security = {@SecurityRequirement(name = "jwtAuth")},
             responses = {
                     @ApiResponse(responseCode = "200", description = "성공"),
                     @ApiResponse(responseCode = "401", description = "인증 실패"),
@@ -87,31 +82,20 @@ public class MemberController {
     ) {
         // 서비스에서 사용자 정보 조회
         MemberResponseDto myInfo = memberService.getMyInfo(memberId);
-        return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_FIND_ME, myInfo));
+        return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_FIND_ME, myInfo));
     }
 
-    @Operation(summary = "회원 로그아웃", description = "세션을 무효화하여 로그아웃을 진행합니다.",
-            security = {@SecurityRequirement(name = "sessionAuth")},
+    @Operation(summary = "회원 로그아웃", description = "프론트에서 토큰 삭제로 처리하세요.",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "로그아웃 성공,"),
-                    @ApiResponse(responseCode = "401", description = "인증 실패"),
-                    @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음")
+                    @ApiResponse(responseCode = "200", description = "로그아웃 성공")
             })
     @PostMapping("/logout")
-    public ResponseEntity<BaseResponse<MessageResponseDto>> logout(
-            HttpServletRequest request
-    ) {
-        HttpSession session = request.getSession(false); // false -> Session 새로 생성하지 않고 null 반환
-        if (session != null) {
-            session.invalidate(); // 세션 무효화 -> 로그아웃
-        }
-        return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_LOGOUT));
+    public ResponseEntity<BaseResponse<MessageResponseDto>> logout() {
+        return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_LOGOUT));
     }
 
-    @Operation(summary = "회원 삭제", description = "특정 회원을 삭제합니다.",
-            security = {@SecurityRequirement(name = "sessionAuth")},
+    @Operation(summary = "회원 삭제", description = "JWT 토큰 기반 인증을 통해 현재 로그인된 회원을 삭제합니다.",
+            security = {@SecurityRequirement(name = "jwtAuth")},
             responses = {
                     @ApiResponse(responseCode = "204", description = "삭제 성공"),
                     @ApiResponse(responseCode = "401", description = "인증 실패"),
@@ -119,19 +103,11 @@ public class MemberController {
             })
     @DeleteMapping("/me")
     public ResponseEntity<BaseResponse<MessageResponseDto>> withdraw(
-            @Valid
-            @RequestBody WithdrawRequestDto requestDto,
-            @LoginMember Long memberId,
-            HttpServletRequest request
+            @Valid @RequestBody WithdrawRequestDto requestDto,
+            @LoginMember Long memberId
     ) {
         // 서비스 로직으로 탈퇴 처리 (비밀번호 확인)
         memberService.withdraw(requestDto, memberId);
-
-        HttpSession session = request.getSession(false); // false -> Session 새로 생성하지 않고 null 반환
-        if (session != null) {
-            session.invalidate(); // 세션 무효화 -> 회원탈퇴
-        }
-        return ResponseEntity
-                .ok(BaseResponse.success(ResponseCode.SUCCESS_WITHDRAW));
+        return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_WITHDRAW));
     }
 }
