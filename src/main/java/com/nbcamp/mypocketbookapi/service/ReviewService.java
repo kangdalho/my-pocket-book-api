@@ -64,7 +64,7 @@ public class ReviewService {
 	 * @return 생성된 리뷰 DTO
 	 */
 	@Transactional
-	@CacheEvict(value = "top10Reviews", allEntries = true)
+	//@CacheEvict(value = "top10Reviews", allEntries = true)
 	public ReviewResponseDto createReview(Long memberId, Long contentId, ReviewRequestDto requestDto) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
@@ -95,7 +95,7 @@ public class ReviewService {
 	 * @return 수정된 리뷰 DTO
 	 */
 	@Transactional
-	@CacheEvict(value = "top10Reviews", allEntries = true)
+	//@CacheEvict(value = "top10Reviews", allEntries = true)
 	public ReviewResponseDto updateReview(Long memberId, Long contentId, Long reviewId, ReviewRequestDto requestDto) {
 		memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
@@ -125,7 +125,7 @@ public class ReviewService {
 	 * @param reviewId 삭제할 리뷰 ID
 	 */
 	@Transactional
-	@CacheEvict(value = "top10Reviews", allEntries = true)
+	//@CacheEvict(value = "top10Reviews", allEntries = true)
 	public void deleteReview(Long memberId, Long reviewId) {
 		memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));

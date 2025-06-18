@@ -32,6 +32,7 @@ public class RedisConfig {
 		GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(redisObjectMapper);
 
 		RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+			.entryTtl(Duration.ofHours(24)) // 캐시 앤트리의 만료 시간을 24시간으로 설정
 			//.entryTtl(Duration.ofMinutes(10)) // 캐시 앤트리의 만료 시간을 10분으로 설정. 캐시된 데이터는 10분 후 자동으로 만료
 			.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
 			.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
