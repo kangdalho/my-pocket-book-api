@@ -13,16 +13,21 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
+        String jwtSchemeName = "bearerAuth";
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwtSchemeName);
+
+        Components components = new Components()
+                .addSecuritySchemes(jwtSchemeName, new SecurityScheme()
+                        .name(jwtSchemeName)
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT"));
+
         return new OpenAPI()
-                .addSecurityItem(new SecurityRequirement().addList("sessionAuth"))
-                .components(new Components().addSecuritySchemes("sessionAuth",
-                        new SecurityScheme()
-                                .type(SecurityScheme.Type.APIKEY)
-                                .in(SecurityScheme.In.COOKIE)
-                                .name("JSESSIONID")
-                        ))
                 .info(new Info().title("MY POCKET API")
                         .description("my pocket api 문서")
-                        .version("v1.0.0"));
+                        .version("v1.0.0"))
+                .addSecurityItem(securityRequirement)
+                .components(components);
     }
 }

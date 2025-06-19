@@ -5,7 +5,6 @@ import com.nbcamp.mypocketbookapi.common.LoginMember;
 import com.nbcamp.mypocketbookapi.exception.BusinessException;
 import com.nbcamp.mypocketbookapi.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -18,18 +17,18 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED); // 세션 없거나 로그인 정보 없을 경우 예외
-        }
+        Object memberIdObj = request.getAttribute(Const.LOGIN_USER);
 
-        return session.getAttribute(Const.LOGIN_USER);
+       if(memberIdObj == null) {
+           throw new BusinessException(ErrorCode.INVALID_TOKEN_MEMBER_ID);
+       }
+       return memberIdObj;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(LoginMember.class)
-               && parameter.getParameterType().equals(Long.class);
+                && parameter.getParameterType().equals(Long.class);
     }
 }
