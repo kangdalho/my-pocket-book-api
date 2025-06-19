@@ -7,6 +7,11 @@ import com.nbcamp.mypocketbookapi.dto.content.ContentCreateRequestDto;
 import com.nbcamp.mypocketbookapi.dto.content.ContentResponseDto;
 import com.nbcamp.mypocketbookapi.dto.content.ContentSearchResponseDto;
 import com.nbcamp.mypocketbookapi.service.ContentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +34,7 @@ public class ContentController {
     private final ContentService contentService;
 
     // 카카오 api 정보 검색
+    @Operation(summary = "카카오 api 검색", description = "카카오 api에서 도서를 검색합니다.")
     @GetMapping("/api/contents/search")
     // @RequestParam String query = query 파라미터를 url에서 받아온다. size - 한번에 검색해서 가져올 결과 개수. 서비스에서 실제 로직처리
     public ResponseEntity<BaseResponse<ContentSearchResponseDto>> searchResponseDto(@RequestParam String query, @RequestParam(defaultValue = "10") int size) {
@@ -36,6 +42,9 @@ public class ContentController {
     }
 
     // 도서 등록
+    @Operation(
+            summary = "콘텐츠 등록",
+            description = "로그인한 회원이 새로운 도서를 등록합니다. 한 회원이 같은 ISBN의 콘텐츠를 중복 등록할 수 없습니다.")
     @PostMapping("/api/contents")
     // 등록이기때문에 defaultvalue가 없어도 된다 size가 의미가없음
     // 회원 id를 url 쿼리 파라미터로 받아옴 서비스에서 실제로직
@@ -47,6 +56,7 @@ public class ContentController {
     }
 
     // 회원이 등록한 도서 전체 조회
+    @Operation(summary = "도서 전체 조회", description = "등록한 도서 전체 조회")
     @GetMapping("/api/contents")
     // List를 page로 변경 <ContentResponseDto>는 콘텐츠 목록을 DTO 형태로 담은 리스트
     public ResponseEntity<BaseResponse<Page<ContentResponseDto>>> findAllContents(
@@ -57,6 +67,7 @@ public class ContentController {
     }
 
     // 회원이 등록한 도서 단건 조회
+    @Operation(summary = "도서 단건 조회", description = "등록한 도서 단건 조회")
     @GetMapping("/api/contents/{contentId}")
     public ResponseEntity<BaseResponse<ContentResponseDto>> findContentById(@PathVariable Long contentId, @LoginMember Long memberId) {
         ContentResponseDto content = contentService.findContentById(memberId, contentId);
@@ -64,11 +75,24 @@ public class ContentController {
     }
 
     // 회원이 등록한 도서 삭제
+    @Operation(summary = "등록한 도서 삭제", description = "해당 회원이 등록한 도서 삭제 조회")
     @DeleteMapping("/api/contents/{contentId}")
     public ResponseEntity<BaseResponse<Void>> deleteContent(@PathVariable Long contentId, @LoginMember Long memberId) {
         contentService.deleteContent(memberId, contentId);
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_BOOK_DELETED));
     }
 
-    // 검색
+    // 도서 검색 기능
+    @Operation(summary = "등록한 도서 검색", description = "summary의 일부분을 입력하여 검색")
+    @GetMapping("/api/contents/books/search")
+    public ResponseEntity<BaseResponse<Page<ContentResponseDto>>> searchBooks(
+            @LoginMember Long memberId,
+            @RequestParam String keyword,
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.DESC) Pageable pageable) {
+       Page<ContentResponseDto> content = contentService.searchContentsBySummary(memberId, keyword, pageable);
+       return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_OK, content));
+
+
+    }
 }
