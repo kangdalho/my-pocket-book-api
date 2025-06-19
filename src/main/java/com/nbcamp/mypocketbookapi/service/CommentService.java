@@ -10,15 +10,12 @@ import com.nbcamp.mypocketbookapi.exception.comment.CommentException;
 import com.nbcamp.mypocketbookapi.repository.CommentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.ReviewJpaRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
 
 @RequiredArgsConstructor
 @Service
@@ -27,8 +24,6 @@ public class CommentService {
     private final CommentJpaRepository commentJpaRepository;
     private final MemberJpaRepository memberJpaRepository;
     private final ReviewJpaRepository reviewJpaRepository;
-
-
 
     @Transactional
     public Comment createComment(Long reviewId, Long memberId, CommentRequest request) {
@@ -45,16 +40,15 @@ public class CommentService {
 
         return commentJpaRepository.save(comment);
     }
-    @Transactional
-    public List<CommentResponse> getCommentsByReviewId(Long reviewId) {
+
+    @Transactional(readOnly = true)
+    public Page<CommentResponse> getCommentsByReviewId(Long reviewId, Pageable pageable) {
         Review review = reviewJpaRepository.findById(reviewId)
                 .orElseThrow(() -> new CommentException(ErrorCode.REVIEW_NOT_FOUND));
 
-        List<Comment> comments = commentJpaRepository.findByReview(review);
+        Page<Comment> commentPage = commentJpaRepository.findByReview(review, pageable);
 
-        return comments.stream()
-                .map(CommentResponse::fromEntity)
-                .collect(Collectors.toList());
+        return commentPage.map(CommentResponse::fromEntity);
     }
 
     @Transactional
