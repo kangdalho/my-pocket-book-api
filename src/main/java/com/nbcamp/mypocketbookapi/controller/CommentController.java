@@ -7,6 +7,7 @@ import com.nbcamp.mypocketbookapi.dto.comment.request.CommentRequest;
 import com.nbcamp.mypocketbookapi.dto.comment.response.CommentResponse;
 import com.nbcamp.mypocketbookapi.entity.Comment;
 import com.nbcamp.mypocketbookapi.service.CommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "E. 코멘트", description = "댓글 좋아요 관련 API")
 public class CommentController {
 
     private final CommentService commentService;
