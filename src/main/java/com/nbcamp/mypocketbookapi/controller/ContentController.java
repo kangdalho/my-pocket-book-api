@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import java.util.List;
 @Slf4j
 @RestController// 브라우저에서 보내는 요청을 처리하는 클래스
 @RequiredArgsConstructor
+@Tag(name = "B. 콘텐츠", description = "콘텐츠 관련 API")
 public class ContentController {
 
     private final ContentService contentService;

@@ -5,6 +5,7 @@ import com.nbcamp.mypocketbookapi.common.LoginMember;
 import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.reviewlike.ReviewLikeResponseDto;
 import com.nbcamp.mypocketbookapi.service.ReviewLikeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-
+@Tag(name = "D. 리뷰 좋아요", description = "리뷰 좋아요 관련 API")
 public class ReviewLikeController {
 
     private final ReviewLikeService reviewLikeService;
