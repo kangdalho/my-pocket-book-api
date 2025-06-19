@@ -86,7 +86,6 @@ public class ContentService {
         //  저장 및 반환
         return new ContentResponseDto(saved);
 
-
     }
 
     // id 기준 등록한 도서 전체 조회
@@ -138,4 +137,27 @@ public class ContentService {
         contentJpaRepository.delete(content);
 
     }
+
+    // 도서 검색 기능
+    public Page<ContentResponseDto> searchContentsBySummary(Long memberId, String keyword, Pageable pageable) {
+        Member member = memberJpaRepository.findById(memberId)
+                .orElseThrow(()-> new ContentException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Page<Content> contents = contentJpaRepository.findByMemberAndSummaryContainingIgnoreCase(member, keyword, pageable);
+
+        return contents.map(content -> new ContentResponseDto(
+                content.getId(),
+                content.getIsbn(),
+                content.getTitle(),
+                content.getThumbnail(),
+                content.getBookLink(),
+                content.getSummary(),
+                content.getSalePrice(),
+                content.getStatus(),
+                content.getCreatedAt()
+        ));
+
+    }
+
+
 }

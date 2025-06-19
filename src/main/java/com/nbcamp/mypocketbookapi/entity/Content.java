@@ -41,7 +41,7 @@ public class Content extends BaseEntity {
     @NotBlank
     private String bookLink;
 
-    @Lob // lob = large object 대용량 객체
+//    @Lob // lob = large object 대용량 객체
     @NotBlank
     private String summary;
 

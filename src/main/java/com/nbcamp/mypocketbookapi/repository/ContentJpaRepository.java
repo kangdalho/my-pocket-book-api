@@ -2,12 +2,12 @@ package com.nbcamp.mypocketbookapi.repository;
 
 import com.nbcamp.mypocketbookapi.entity.Content;
 import com.nbcamp.mypocketbookapi.entity.Member;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ContentJpaRepository extends JpaRepository<Content, Long> {
@@ -19,4 +19,7 @@ public interface ContentJpaRepository extends JpaRepository<Content, Long> {
     Optional<Content> findByIdAndMemberId(Long contentId, Long memberId);
 
     boolean existsByMemberAndIsbn(Member member, String isbn);
+
+    // ContainingIgnoreCase - Containing = 포함 여부(like) IgnoreCase = 대소문자 구분안함
+    Page<Content> findByMemberAndSummaryContainingIgnoreCase(@NotNull Member member, @NotBlank String summary, Pageable pageable);
 }
