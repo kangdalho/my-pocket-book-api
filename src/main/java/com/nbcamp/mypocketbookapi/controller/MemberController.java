@@ -4,19 +4,16 @@ import com.nbcamp.mypocketbookapi.common.BaseResponse;
 import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.member.request.LoginRequestDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.WithdrawRequestDto;
-import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MessageResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
 import com.nbcamp.mypocketbookapi.security.CustomMemberDetails;
-import com.nbcamp.mypocketbookapi.security.JwtUtil;
 import com.nbcamp.mypocketbookapi.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
-    private final JwtUtil jwtUtil;
 
     @Operation(summary = "회원 생성", description = "새로운 회원을 등록합니다.",
             responses = {
@@ -48,22 +44,14 @@ public class MemberController {
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_SIGNUP, signup));
     }
 
-    @Operation(summary = "회원 로그인", description = "아이디와 비밀번호를 사용하여 로그인하고 JWT 토큰을 발급합니다.",
+    @Operation(summary = "회원 로그인", description = "아이디와 비밀번호를 사용하여 로그인하고 JWT 토큰을 응답 헤더에 발급합니다.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "로그인 성공, 세션 생성"),
-                    @ApiResponse(responseCode = "401", description = "로그인 실패 (잘못된 아이디 또는 비밀번호)")
+                    @ApiResponse(responseCode = "200", description = "로그인 성공, JWT 토큰 응답 헤더 포함"),
+                    @ApiResponse(responseCode = "401", description = "로그인 실패 (아이디 또는 비밀번호 오류)")
             })
     @PostMapping("/login")
-    public ResponseEntity<BaseResponse<LoginResponseDto>> login(
-            @Valid @RequestBody LoginRequestDto requestDto,
-            HttpServletResponse httpServletResponse
-    ) {
-        LoginResponseDto response = memberService.login(requestDto); // 로그인 검증 + 사용자 정보 반환
-        String createToken = jwtUtil.createToken(response.getNickname(), response.getId());
-
-        httpServletResponse.setHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
-
-        return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_LOGIN, response));
+    public void loginForSwagger(@RequestBody LoginRequestDto requestDto) {
+        throw new UnsupportedOperationException("이 엔드포인트는 Swagger 문서용입니다. 실제 로그인은 필터에서 처리됩니다.");
     }
 
     @Operation(summary = "회원 정보 조회", description = "JWT 토큰을 기반으로 인증된 회원 정보를 조회합니다.",
@@ -77,7 +65,7 @@ public class MemberController {
     public ResponseEntity<BaseResponse<MemberResponseDto>> getMyInfo(
             @Parameter(hidden = true)
             @AuthenticationPrincipal CustomMemberDetails customMemberDetails
-            ) {
+    ) {
         // 서비스에서 사용자 정보 조회
         MemberResponseDto myInfo = memberService.getMyInfo(customMemberDetails.getMemberId());
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_FIND_ME, myInfo));
