@@ -1,8 +1,6 @@
 package com.nbcamp.mypocketbookapi.controller;
 
 import com.nbcamp.mypocketbookapi.common.BaseResponse;
-import com.nbcamp.mypocketbookapi.common.Const;
-import com.nbcamp.mypocketbookapi.common.LoginMember;
 import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.member.request.LoginRequestDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.WithdrawRequestDto;
@@ -10,6 +8,7 @@ import com.nbcamp.mypocketbookapi.dto.member.response.LoginResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MessageResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
+import com.nbcamp.mypocketbookapi.security.CustomMemberDetails;
 import com.nbcamp.mypocketbookapi.security.JwtUtil;
 import com.nbcamp.mypocketbookapi.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,13 +16,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -78,10 +76,10 @@ public class MemberController {
     @GetMapping("/me")
     public ResponseEntity<BaseResponse<MemberResponseDto>> getMyInfo(
             @Parameter(hidden = true)
-            @LoginMember Long memberId
-    ) {
+            @AuthenticationPrincipal CustomMemberDetails customMemberDetails
+            ) {
         // 서비스에서 사용자 정보 조회
-        MemberResponseDto myInfo = memberService.getMyInfo(memberId);
+        MemberResponseDto myInfo = memberService.getMyInfo(customMemberDetails.getMemberId());
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_FIND_ME, myInfo));
     }
 
@@ -104,10 +102,10 @@ public class MemberController {
     @DeleteMapping("/me")
     public ResponseEntity<BaseResponse<MessageResponseDto>> withdraw(
             @Valid @RequestBody WithdrawRequestDto requestDto,
-            @LoginMember Long memberId
+            @AuthenticationPrincipal CustomMemberDetails customMemberDetails
     ) {
         // 서비스 로직으로 탈퇴 처리 (비밀번호 확인)
-        memberService.withdraw(requestDto, memberId);
+        memberService.withdraw(requestDto, customMemberDetails.getMemberId());
         return ResponseEntity.ok(BaseResponse.success(ResponseCode.SUCCESS_WITHDRAW));
     }
 }
