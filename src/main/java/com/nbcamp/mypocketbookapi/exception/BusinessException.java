@@ -13,7 +13,4 @@ public class BusinessException extends RuntimeException {
         return errorCode;
     }
 
-//    public int getStatus() {
-//        return errorCode.getHttpStatus().value();
-//    }
 }
