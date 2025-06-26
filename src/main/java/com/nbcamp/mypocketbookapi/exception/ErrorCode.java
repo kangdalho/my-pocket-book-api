@@ -8,6 +8,7 @@ public enum ErrorCode implements BaseCode {
     // Auth
     UNAUTHORIZED(DomainType.AUTH, HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
     INVALID_TOKEN_MEMBER_ID(DomainType.AUTH, HttpStatus.UNAUTHORIZED, "토큰에 유효한 memberId 정보가 없습니다."),
+    JSON_PARSE_ERROR(DomainType.AUTH, HttpStatus.BAD_REQUEST, "로그인 요청 JSON 파싱 실패"),
     // Member
     EMAIL_NOT_REGISTERED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "등록되지 않은 이메일입니다. 회원가입 후 로그인해주세요."),
     EMAIL_ALREADY_EXISTS(DomainType.MEMBER, HttpStatus.CONFLICT, "이미 사용중인 이메일입니다."),
