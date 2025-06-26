@@ -25,7 +25,11 @@ public class WebConfig implements WebMvcConfigurer {
                 )
                 .excludePathPatterns(
                         "/api/members/signup",
-                        "/api/members/login"
+                        "/api/members/login",
+                        "/api/dummy-data",           // 더미 데이터 제외
+                        "/api/reviews/top10",         // 좋아요 많은 리뷰 Top 10 조회 제외
+                        "/api/books/**/reviews",      // ISBN 기준 리뷰 조회 제외
+                        "/api/reviews"               // 전체 리뷰 조회 제외
                 );
     }
 

@@ -42,6 +42,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis' // redis
     implementation 'org.springframework.boot:spring-boot-starter-cache' // cache
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.1' // Jackson
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {

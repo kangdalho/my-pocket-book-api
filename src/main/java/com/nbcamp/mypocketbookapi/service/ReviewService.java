@@ -13,10 +13,12 @@ import com.nbcamp.mypocketbookapi.exception.review.ReviewException;
 import com.nbcamp.mypocketbookapi.repository.ContentJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.MemberJpaRepository;
 import com.nbcamp.mypocketbookapi.repository.ReviewJpaRepository;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
+// import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,8 +48,8 @@ public class ReviewService {
 		// 결과를 DTO로 매핑하여 반환
 		return results.getContent().stream()
 			.map(result -> {
-				Review review = (Review) result[0];
-				Long likeCount = (Long) result[1];
+				Review review = (Review)result[0];
+				Long likeCount = (Long)result[1];
 				return new TopReviewResponseDto(review, likeCount);
 			})
 			.collect(Collectors.toList());
@@ -95,7 +97,7 @@ public class ReviewService {
 	 * @return 수정된 리뷰 DTO
 	 */
 	@Transactional
-	//@CacheEvict(value = "top10Reviews", allEntries = true)
+	//@CacheEvict(value = "top10Reviews", allEntries = true)  <- 성능개선 고민끝에 지우기로함
 	public ReviewResponseDto updateReview(Long memberId, Long contentId, Long reviewId, ReviewRequestDto requestDto) {
 		memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
@@ -103,10 +105,8 @@ public class ReviewService {
 		contentRepository.findById(contentId)
 			.orElseThrow(() -> new ContentException(ErrorCode.CONTENT_NOT_FOUND));
 
-		Review review = reviewRepository.findByContentIdAndIdWithMemberAndContent(contentId, reviewId);
-		if (review == null) {
-			throw new ReviewException(ErrorCode.REVIEW_NOT_FOUND);
-		}
+		Review review = reviewRepository.findByContentIdAndId(contentId, reviewId)
+			.orElseThrow(() -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND));
 
 		if (!review.getMember().getId().equals(memberId)) {
 			throw new ReviewException(ErrorCode.UNAUTHORIZED_REVIEW_MODIFICATION);
@@ -130,7 +130,7 @@ public class ReviewService {
 		memberRepository.findById(memberId)
 			.orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
 
-		Review review = reviewRepository.findByIdWithMember(reviewId)
+		Review review = reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND));
 
 		if (!review.getMember().getId().equals(memberId)) {
@@ -150,7 +150,7 @@ public class ReviewService {
 	 */
 	@Transactional(readOnly = true)
 	public Page<ReviewResponseDto> getReviewsByIsbn(String isbn, Pageable pageable) {
-		Page<Review> reviewsPage = reviewRepository.findByContent_IsbnWithMemberAndContent(isbn, pageable);
+		Page<Review> reviewsPage = reviewRepository.findByContent_Isbn(isbn, pageable);
 
 		if (reviewsPage.isEmpty() && pageable.getPageNumber() == 0) {
 			throw new ReviewException(ErrorCode.REVIEW_NOT_FOUND);
@@ -167,7 +167,7 @@ public class ReviewService {
 	 */
 	@Transactional(readOnly = true)
 	public Page<ReviewResponseDto> getAllReviews(Pageable pageable) {
-		Page<Review> reviewsPage = reviewRepository.findAllWithMemberAndContent(pageable);
+		Page<Review> reviewsPage = reviewRepository.findAll(pageable);
 
 		if (reviewsPage.isEmpty() && pageable.getPageNumber() == 0) {
 			throw new ReviewException(ErrorCode.REVIEW_NOT_FOUND);
@@ -186,11 +186,8 @@ public class ReviewService {
 	 */
 	@Transactional(readOnly = true)
 	public ReviewResponseDto getReviewByContentIdAndReviewId(Long contentId, Long reviewId) {
-		Review review = reviewRepository.findByContentIdAndIdWithMemberAndContent(contentId, reviewId);
-
-		if (review == null) {
-			throw new ReviewException(ErrorCode.REVIEW_NOT_FOUND);
-		}
+		Review review = reviewRepository.findByContentIdAndId(contentId, reviewId)
+			.orElseThrow(() -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND));
 
 		return new ReviewResponseDto(review);
 	}
