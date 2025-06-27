@@ -1,11 +1,12 @@
 package com.nbcamp.mypocketbookapi.controller;
 
 import com.nbcamp.mypocketbookapi.common.BaseResponse;
-import com.nbcamp.mypocketbookapi.common.LoginMember;
+//import com.nbcamp.mypocketbookapi.common.LoginMember;
 import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
 import com.nbcamp.mypocketbookapi.dto.review.ReviewResponseDto;
 import com.nbcamp.mypocketbookapi.dto.review.TopReviewResponseDto;
+import com.nbcamp.mypocketbookapi.security.CustomMemberDetails;
 import com.nbcamp.mypocketbookapi.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@Tag(name = "리뷰 API", description = "리뷰 관련 API")
+@Tag(name = "C. 리뷰", description = "리뷰 관련 API")
 public class ReviewController {
 
 	private final ReviewService reviewService;
@@ -50,11 +52,11 @@ public class ReviewController {
 	@Operation(summary = "리뷰 작성", description = "로그인한 사용자가 특정 콘텐츠에 리뷰를 작성합니다.")
 	@PostMapping("/contents/{contentId}/reviews")
 	public ResponseEntity<BaseResponse<ReviewResponseDto>> createReview(
-		@LoginMember Long memberId,
+		@AuthenticationPrincipal CustomMemberDetails customMemberDetails,
 		@PathVariable Long contentId,
 		@RequestBody @Valid ReviewRequestDto reviewRequestDto
 	) {
-		ReviewResponseDto responseDto = reviewService.createReview(memberId, contentId, reviewRequestDto);
+		ReviewResponseDto responseDto = reviewService.createReview(customMemberDetails.getMemberId(), contentId, reviewRequestDto);
 		return ResponseEntity
 			.status(ResponseCode.SUCCESS_REVIEW_REGISTERED.getHttpStatus())
 			.body(BaseResponse.success(ResponseCode.SUCCESS_REVIEW_REGISTERED, responseDto));
@@ -105,12 +107,12 @@ public class ReviewController {
 	@Operation(summary = "리뷰 수정", description = "작성자가 자신의 리뷰를 수정합니다.")
 	@PutMapping("/contents/{contentId}/reviews/{reviewId}")
 	public ResponseEntity<BaseResponse<ReviewResponseDto>> updateReview(
-		@LoginMember Long memberId,
+		@AuthenticationPrincipal CustomMemberDetails customMemberDetails,
 		@PathVariable Long contentId,
 		@PathVariable Long reviewId,
 		@RequestBody @Valid ReviewRequestDto reviewRequestDto
 	) {
-		ReviewResponseDto responseDto = reviewService.updateReview(memberId, contentId, reviewId, reviewRequestDto);
+		ReviewResponseDto responseDto = reviewService.updateReview(customMemberDetails.getMemberId(), contentId, reviewId, reviewRequestDto);
 		return ResponseEntity
 			.status(ResponseCode.SUCCESS_OK.getHttpStatus())
 			.body(BaseResponse.success(ResponseCode.SUCCESS_OK, responseDto));
@@ -120,10 +122,10 @@ public class ReviewController {
 	@Operation(summary = "리뷰 삭제", description = "작성자가 자신의 리뷰를 삭제합니다.")
 	@DeleteMapping("/reviews/{reviewId}")
 	public ResponseEntity<BaseResponse<Void>> deleteReview(
-		@LoginMember Long memberId,
+		@AuthenticationPrincipal CustomMemberDetails customMemberDetails,
 		@PathVariable Long reviewId
 	) {
-		reviewService.deleteReview(memberId, reviewId);
+		reviewService.deleteReview(customMemberDetails.getMemberId(), reviewId);
 		return ResponseEntity
 			.status(ResponseCode.SUCCESS_NO_CONTENT.getHttpStatus())
 			.body(BaseResponse.success(ResponseCode.SUCCESS_NO_CONTENT));
