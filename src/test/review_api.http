@@ -1,5 +1,5 @@
 ### 리뷰 작성 (POST)
-POST http://localhost:8080/api/contents/1/reviews
+POST http://localhost:8080/api/contents/2/reviews
 Content-Type: application/json
 Accept: application/json
 
@@ -136,4 +136,6 @@ Accept: application/json
 ### 존재하지 않는 리뷰 삭제 (에러 테스트)
 DELETE http://localhost:8080/api/reviews/999
 Accept: application/json
+
+
 
