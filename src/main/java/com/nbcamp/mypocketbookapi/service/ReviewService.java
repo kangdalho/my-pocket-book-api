@@ -40,6 +40,7 @@ public class ReviewService {
 	 * - 캐시 미존재 시 DB 조회 후 캐시에 저장
 	 */
 	@Cacheable(value = "top10Reviews", key = "'all'", cacheManager = "cacheManager")
+	// 부하테스트할때 @Cacheable 이부분 주석처리해서 캐싱 안걸리게하자
 	@Transactional(readOnly = true)
 	public List<TopReviewResponseDto> getTop10LikedReviews() {
 		Pageable topTen = PageRequest.of(0, 10);

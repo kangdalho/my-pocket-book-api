@@ -13,6 +13,5 @@ public interface ReviewLikeJpaRepository extends JpaRepository<ReviewLike, Long>
 
     List<ReviewLike> findByMember(Member member);
 
-    // 특정 리뷰에 대한 총 좋아요 수 계산
-    Long countByReview(Review review);
+
 }
