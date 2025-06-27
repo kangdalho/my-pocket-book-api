@@ -32,6 +32,37 @@ spring:
     init:
       mode: always
 
+  # OAuth2 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            client-name: google
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope:
+              - profile
+              - email
+
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret:
+            client-name: kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - profile_nickname
+              - account_email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
 # 서버 성능 설정
 server:
   port: 8080
@@ -43,8 +74,20 @@ server:
 
 # Swagger 설정
 springdoc:
+  version: '@project.version@'
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
   swagger-ui:
+    operations-sorter: method
+    tags-sorter: alpha
     path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-query-params-without-oauth2: true
+    doc-expansion: list
+  paths-to-match:
+    - /api/**
 
 # 카카오 API 설정
 kakao:
@@ -57,8 +100,8 @@ kakao:
 
 # JWT 설정
 jwt:
-  secreat:
-    key: ${SECREAT_KEY}
+  secret:
+    key: ${SECRET_KEY}
 
 # 모니터링용 Actuator
 management:
@@ -78,3 +121,5 @@ logging:
     # 성능 테스트 시에는 SQL 로그를 INFO로 설정 (DEBUG는 성능 저하)
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
+
+

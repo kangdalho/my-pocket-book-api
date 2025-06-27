@@ -1,10 +1,12 @@
 package com.nbcamp.mypocketbookapi.config;
 
 
-import com.nbcamp.mypocketbookapi.security.CustomMemberDetailsService;
-import com.nbcamp.mypocketbookapi.security.JwtFilter;
-import com.nbcamp.mypocketbookapi.security.JwtUtil;
-import com.nbcamp.mypocketbookapi.security.LoginFilter;
+import com.nbcamp.mypocketbookapi.security.jwt.JwtFilter;
+import com.nbcamp.mypocketbookapi.security.jwt.JwtUtil;
+import com.nbcamp.mypocketbookapi.security.jwt.LoginFilter;
+import com.nbcamp.mypocketbookapi.security.core.CustomMemberDetailsService;
+import com.nbcamp.mypocketbookapi.security.oauth.CustomOAuth2UserService;
+import com.nbcamp.mypocketbookapi.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +25,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final CustomMemberDetailsService memberDetailsService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtUtil jwtUtil;
 
     // AuthenticationManger Bean 등록
@@ -61,6 +64,13 @@ public class SecurityConfig {
         // JWT 기반 인증이기 때문에 기본 인증 비활성화
         http
                 .httpBasic((auth) -> auth.disable());
+
+        // oauth2
+        http
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)))
+                        .successHandler(oAuth2SuccessHandler));
 
         // 회원가입, 로그인, 루트경로는 모두 접근허용(permitAll())
         // 그 외 모든 요청은 인증된 사용자만 접근가능(authenticated())

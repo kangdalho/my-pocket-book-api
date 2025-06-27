@@ -23,10 +23,14 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
 
-
     public Member(String email, String password, String nickname) {
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
+    }
+
+    public void updateInfo(String email, String nickname) {
+        this.email = email;
         this.nickname = nickname;
     }
 }

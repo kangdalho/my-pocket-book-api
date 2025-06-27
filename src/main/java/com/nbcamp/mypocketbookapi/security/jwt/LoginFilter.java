@@ -1,9 +1,10 @@
-package com.nbcamp.mypocketbookapi.security;
+package com.nbcamp.mypocketbookapi.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nbcamp.mypocketbookapi.dto.member.request.LoginRequestDto;
 import com.nbcamp.mypocketbookapi.exception.ErrorCode;
 import com.nbcamp.mypocketbookapi.exception.member.MemberException;
+import com.nbcamp.mypocketbookapi.security.core.CustomMemberDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +22,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     public LoginFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-
         // URL 설정 (기본값은 /login)
         setFilterProcessesUrl("/api/members/login");
     }
@@ -53,14 +53,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Long memberId = customMemberDetails.getMemberId();
         String nickname = customMemberDetails.getUsername();
 
-
         String token = jwtUtil.createToken(nickname, memberId);
 
         //헤더에 토큰 추가
         response.addHeader("Authorization", token);
-
         response.setContentType("application/json;charset=UTF-8");
-
     }
 
     // 로그인 실패 시 실행
