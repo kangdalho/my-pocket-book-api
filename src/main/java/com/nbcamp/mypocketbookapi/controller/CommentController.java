@@ -5,7 +5,7 @@ import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.comment.request.CommentRequest;
 import com.nbcamp.mypocketbookapi.dto.comment.response.CommentResponse;
 import com.nbcamp.mypocketbookapi.entity.Comment;
-import com.nbcamp.mypocketbookapi.security.CustomMemberDetails;
+import com.nbcamp.mypocketbookapi.security.core.CustomMemberDetails;
 import com.nbcamp.mypocketbookapi.service.CommentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

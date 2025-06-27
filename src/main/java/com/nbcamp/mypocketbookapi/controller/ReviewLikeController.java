@@ -3,7 +3,7 @@ package com.nbcamp.mypocketbookapi.controller;
 import com.nbcamp.mypocketbookapi.common.BaseResponse;
 import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.reviewlike.ReviewLikeResponseDto;
-import com.nbcamp.mypocketbookapi.security.CustomMemberDetails;
+import com.nbcamp.mypocketbookapi.security.core.CustomMemberDetails;
 import com.nbcamp.mypocketbookapi.service.ReviewLikeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

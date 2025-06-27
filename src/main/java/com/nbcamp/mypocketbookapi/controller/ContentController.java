@@ -5,7 +5,7 @@ import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.content.ContentCreateRequestDto;
 import com.nbcamp.mypocketbookapi.dto.content.ContentResponseDto;
 import com.nbcamp.mypocketbookapi.dto.content.ContentSearchResponseDto;
-import com.nbcamp.mypocketbookapi.security.CustomMemberDetails;
+import com.nbcamp.mypocketbookapi.security.core.CustomMemberDetails;
 import com.nbcamp.mypocketbookapi.service.ContentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -6,7 +6,7 @@ import com.nbcamp.mypocketbookapi.common.ResponseCode;
 import com.nbcamp.mypocketbookapi.dto.review.ReviewRequestDto;
 import com.nbcamp.mypocketbookapi.dto.review.ReviewResponseDto;
 import com.nbcamp.mypocketbookapi.dto.review.TopReviewResponseDto;
-import com.nbcamp.mypocketbookapi.security.CustomMemberDetails;
+import com.nbcamp.mypocketbookapi.security.core.CustomMemberDetails;
 import com.nbcamp.mypocketbookapi.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

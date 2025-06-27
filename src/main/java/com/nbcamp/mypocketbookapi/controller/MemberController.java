@@ -7,7 +7,7 @@ import com.nbcamp.mypocketbookapi.dto.member.request.WithdrawRequestDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MessageResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.response.MemberResponseDto;
 import com.nbcamp.mypocketbookapi.dto.member.request.SignupRequestDto;
-import com.nbcamp.mypocketbookapi.security.CustomMemberDetails;
+import com.nbcamp.mypocketbookapi.security.core.CustomMemberDetails;
 import com.nbcamp.mypocketbookapi.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -1,5 +1,6 @@
-package com.nbcamp.mypocketbookapi.security;
+package com.nbcamp.mypocketbookapi.security.jwt;
 
+import com.nbcamp.mypocketbookapi.security.core.CustomMemberDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (tokenOpt.isPresent()) {
             String token = tokenOpt.get();
             if (!jwtUtil.validateToken(token)) {
-                return;
+                return; // 유효하지 않으면 필터 종료
             }
             String nickname = jwtUtil.getClaimFromToken(token).getSubject();
             UserDetails customMemberDetails = customMemberDetailsService.loadUserByUsername(nickname);

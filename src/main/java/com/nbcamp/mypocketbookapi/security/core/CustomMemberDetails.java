@@ -1,4 +1,4 @@
-package com.nbcamp.mypocketbookapi.security;
+package com.nbcamp.mypocketbookapi.security.core;
 
 import com.nbcamp.mypocketbookapi.entity.Member;
 import lombok.Getter;
