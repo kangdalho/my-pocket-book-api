@@ -139,5 +139,3 @@ logging:
     # 성능 테스트 시에는 SQL 로그를 INFO로 설정 (DEBUG는 성능 저하)
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
-
-
