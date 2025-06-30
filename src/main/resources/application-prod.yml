@@ -6,19 +6,19 @@ spring:
     import: aws-parameterstore:/config/my-pocket/
   data:
     redis:
-      host: localhost
+      host: ${redis.host}
       port: 6379
   cache:
     type: redis
   jackson:
     serialization:
-      write-dates-as-timestamps: false
+       write-dates-as-timestamps: false
 
   # 데이터베이스 설정
   datasource:
-    url: jdbc:mysql://localhost:3306/mypocket?useSSL=false&serverTimezone=Asia/Seoul
-    username: root
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${db.host}:3306/${db.name}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${db.username}
+    password: ${db.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
     # HikariCP 연결 풀 성능 설정
@@ -107,12 +107,12 @@ kakao:
     path:
       book: /v3/search/book
   restapi:
-    key: KakaoAK ${KAKAO_API_KEY}
+    key: ${api.kakao}
 
 # JWT 설정
 jwt:
   secret:
-    key: ${SECRET_KEY}
+    key: ${secret.key}
 
 # 모니터링용 Actuator
 management:
@@ -132,5 +132,4 @@ logging:
     # 성능 테스트 시에는 SQL 로그를 INFO로 설정 (DEBUG는 성능 저하)
     org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: INFO
-
 
