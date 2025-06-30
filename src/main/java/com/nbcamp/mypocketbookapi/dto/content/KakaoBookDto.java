@@ -1,10 +1,12 @@
 package com.nbcamp.mypocketbookapi.dto.content;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Getter;
 
 @Getter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoBookDto {
 
     private String isbn;
