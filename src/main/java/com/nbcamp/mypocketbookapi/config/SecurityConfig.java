@@ -77,7 +77,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/members/signup", "/", "/api/members/login").permitAll()
+                        .requestMatchers("/api/members/signup", "/", "/api/members/login","/actuator/health").permitAll()
                         .anyRequest().authenticated());
         // JWT 필터 등록 (UsernamePasswordAuthenticationFilter 전에 실행)
         http
