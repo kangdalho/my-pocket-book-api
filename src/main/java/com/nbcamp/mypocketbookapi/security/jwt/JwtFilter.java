@@ -25,7 +25,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         // request에서 Authorization 헤더를 찾음
         Optional<String> tokenOpt = jwtUtil.extractToken(request);
 
@@ -36,7 +35,6 @@ public class JwtFilter extends OncePerRequestFilter {
             }
             String nickname = jwtUtil.getClaimFromToken(token).getSubject();
             UserDetails customMemberDetails = customMemberDetailsService.loadUserByUsername(nickname);
-
             Authentication authToken = new UsernamePasswordAuthenticationToken(customMemberDetails, null, customMemberDetails.getAuthorities());
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authToken);

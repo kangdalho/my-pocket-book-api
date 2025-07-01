@@ -143,7 +143,10 @@ public class ContentService {
         Member member = memberJpaRepository.findById(memberId)
                 .orElseThrow(()-> new ContentException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Page<Content> contents = contentJpaRepository.findByMemberAndSummaryContainingIgnoreCase(member, keyword, pageable);
+
+//        Page<Content> contents = contentJpaRepository.findByMemberAndSummaryContainingIgnoreCase(member, keyword, pageable);
+
+        Page<Content> contents = contentJpaRepository.searchBySummaryFullText(memberId, keyword, pageable);
 
         return contents.map(content -> new ContentResponseDto(
                 content.getId(),
