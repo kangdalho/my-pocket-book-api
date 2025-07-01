@@ -36,6 +36,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         log.info("Generated JWT Token: {}", token);
 
-        response.sendRedirect("http://localhost:3000/oauth2/success?token=" + token);
+        response.sendRedirect("http://localhost:8080/swagger-ui/index.html");
     }
 }

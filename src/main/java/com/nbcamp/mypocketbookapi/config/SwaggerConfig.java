@@ -1,6 +1,7 @@
 package com.nbcamp.mypocketbookapi.config;
 
 import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -28,6 +29,10 @@ public class SwaggerConfig {
                         .description("my pocket api 문서")
                         .version("v1.0.0"))
                 .addSecurityItem(securityRequirement)
-                .components(components);
+                .components(components)
+                .externalDocs(new ExternalDocumentation()
+                        .description("OAuth2 로그인")
+                        .url("http://localhost:8080/oauth2/authorization")
+                );
     }
 }
