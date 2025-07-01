@@ -30,8 +30,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (tokenOpt.isPresent()) {
             String token = tokenOpt.get();
+
             if (!jwtUtil.validateToken(token)) {
-                return; // 유효하지 않으면 필터 종료
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"Invalid JWT Token\"}");
+                return;
             }
             String nickname = jwtUtil.getClaimFromToken(token).getSubject();
             UserDetails customMemberDetails = customMemberDetailsService.loadUserByUsername(nickname);

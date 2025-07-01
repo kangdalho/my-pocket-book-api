@@ -16,13 +16,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
-@Slf4j
 @Tag(name = "A. 회원 관리", description = "회원 관련 API")
 @RestController
 @RequestMapping("/api/members")
@@ -55,7 +53,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원 정보 조회", description = "JWT 토큰을 기반으로 인증된 회원 정보를 조회합니다.",
-            security = {@SecurityRequirement(name = "jwtAuth")},
+            security = {@SecurityRequirement(name = "bearerAuth")},
             responses = {
                     @ApiResponse(responseCode = "200", description = "성공"),
                     @ApiResponse(responseCode = "401", description = "인증 실패"),
@@ -81,7 +79,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원 삭제", description = "JWT 토큰 기반 인증을 통해 현재 로그인된 회원을 삭제합니다.",
-            security = {@SecurityRequirement(name = "jwtAuth")},
+            security = {@SecurityRequirement(name = "bearerAuth")},
             responses = {
                     @ApiResponse(responseCode = "204", description = "삭제 성공"),
                     @ApiResponse(responseCode = "401", description = "인증 실패"),
