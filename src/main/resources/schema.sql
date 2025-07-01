@@ -31,6 +31,10 @@ CREATE TABLE contents (
                           FOREIGN KEY (member_id) REFERENCES members(id)
 );
 
+ALTER TABLE contents MODIFY summary TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE contents ADD FULLTEXT(summary) WITH PARSER ngram;
+
 -- Review 테이블
 CREATE TABLE reviews (
                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
