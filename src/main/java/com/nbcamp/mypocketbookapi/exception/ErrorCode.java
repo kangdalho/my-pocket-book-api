@@ -13,8 +13,7 @@ public enum ErrorCode implements BaseCode {
     EMAIL_NOT_REGISTERED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "등록되지 않은 이메일입니다. 회원가입 후 로그인해주세요."),
     EMAIL_ALREADY_EXISTS(DomainType.MEMBER, HttpStatus.CONFLICT, "이미 사용중인 이메일입니다."),
     NICKNAME_ALREADY_EXISTS(DomainType.MEMBER, HttpStatus.CONFLICT, "이미 사용중인 닉네임입니다."),
-    EMAIL_MISMATCH(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "이메일이 일치하지 않습니다."),
-    PASSWORD_MISMATCH(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+    LOGIN_FAILED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 올바르지 않습니다."),
     MEMBER_NOT_FOUND(DomainType.MEMBER, HttpStatus.NOT_FOUND, "회원을 찾을 수 없습니다."),
     SIGNUP_REQUIRED(DomainType.MEMBER, HttpStatus.UNAUTHORIZED, "회원가입이 필요합니다."),
 
