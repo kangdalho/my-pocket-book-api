@@ -47,7 +47,7 @@ public class MemberService {
         Member member = memberJpaRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(ErrorCode.MEMBER_NOT_FOUND));
         if (!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
-            throw new MemberException(ErrorCode.PASSWORD_MISMATCH);
+            throw new MemberException(ErrorCode.LOGIN_FAILED);
         }
         memberJpaRepository.delete(member);
     }
